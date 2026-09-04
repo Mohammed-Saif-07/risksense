@@ -47,8 +47,30 @@ without documented limitations is a model risk. Expanded as modules ship.
     inflates the family-wise false-rejection rate; the validation report
     interprets results jointly, not as isolated verdicts.
 
-## Coming with Weeks 2-4
+## Parametric & Monte Carlo engines (Week 2)
 
-Correlation breakdown in crises (Ledoit-Wolf conditions the matrix, doesn't
-make dependence stationary), GARCH parameter instability, FinBERT domain
-shift on risk-factor language, and Granger ≠ causation for the NRS overlay.
+11. **Ledoit-Wolf conditions the matrix, not the world.** Shrinkage fixes
+    the singularity of a 250×500 sample covariance; it does not make
+    dependence stationary. Correlations rise in crises, and a Σ re-fitted
+    monthly is up to a month stale (visible in the 2020 exception cluster).
+12. **Method-of-moments ν is noisy.** The Student-t dof from window
+    kurtosis inherits the (large) sampling error of kurtosis in 250
+    observations; it is clipped to [3, 50] rather than trusted.
+13. **The MV normal/t "Monte Carlo" is exact only because the portfolio is
+    linear.** The projection w'X is univariate for these families, so the
+    simulation adds sampling noise, not information, relative to the
+    closed form — it exists as an engine-validation cross-check and as the
+    scaffold that full revaluation (options) would need.
+14. **GARCH parameter instability.** ω, α, β re-fitted monthly can jump
+    across refits; the variance recursion between refits uses stale
+    parameters with fresh shocks. Persistence α+β near 1 makes long-run
+    variance poorly identified.
+15. **Z₂ bootstrap is i.i.d.** Acerbi-Székely significance here resamples
+    days independently, understating uncertainty under volatility
+    clustering; the original prescribes simulating under the model's own
+    dynamics.
+
+## Coming with Weeks 3-4
+
+FinBERT domain shift on risk-factor language, and Granger ≠ causation for
+the NRS overlay.

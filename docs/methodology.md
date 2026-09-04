@@ -34,17 +34,60 @@ the window ends at *t-1*.
   per FRTB (BCBS 2019, MAR33) alongside 99% VaR (Basel III backtesting
   anchor).
 
-## 3. Backtesting (Week 1: Kupiec + traffic light; Week 2: full suite)
+## 3. Backtesting suite
 
 - **Kupiec (1995) POF**: LR test of unconditional coverage against
   Binomial(T, 1-q); chi-squared(1) asymptotics. Both under- *and*
   over-coverage reject — an over-conservative model wastes capital.
+- **Christoffersen (1998)**: exception clustering via a first-order Markov
+  chain — LR_ind tests π01 = π11 (chi-squared 1), LR_cc = LR_uc + LR_ind
+  (chi-squared 2) tests coverage and independence jointly.
+- **Engle-Manganelli (2004) Dynamic Quantile**: Wald test that the demeaned
+  hit sequence is unpredictable from a constant, 4 lagged hits and the VaR
+  forecast itself; chi-squared(6). Catches longer-range clustering and
+  hits correlated with the forecast level.
+- **Acerbi-Székely (2014) Z₂** for ES: since ES is not elicitable
+  (Gneiting 2011), the Z₂ statistic compares realised tail losses to the
+  promised ES at the same 97.5% level; significance via an i.i.d. bootstrap
+  (approximation — see limitations #11).
 - **Basel traffic light (BCBS 1996)**: exceptions in the trailing 250 days →
   Green (0-4), Yellow (5-9, multiplier add-on 0.40-0.85), Red (10+, add-on
   1.00).
-- Week 2: Christoffersen (1998) independence/conditional coverage;
-  Engle-Manganelli (2004) Dynamic Quantile.
 
-## 4-7. Parametric, Monte Carlo, stress testing, narrative overlay
+## 4. Parametric VaR/ES (Week 2)
 
-Ship with Weeks 2-4; sections will be filled as the code lands.
+Rolling variance-covariance VaR with the portfolio volatility from the full
+constituent covariance: σ_p² = w'Σw, Σ the **Ledoit-Wolf (2004)** shrunk
+estimator over ~500 assets (the raw 250-observation sample covariance is
+singular at that dimension). Σ is re-estimated monthly (`cov_refit_days`);
+the rolling mean updates daily. Two innovation models:
+
+- **Normal**: VaR_q = -μ + σz_q, ES_q = -μ + σφ(z_q)/(1-q).
+- **Student-t**: ν by method of moments from window excess kurtosis
+  (ν = 4 + 6/κ, clipped to [3, 50]); closed-form ES per
+  McNeil-Frey-Embrechts (2015) §2.3.
+
+## 5. Monte Carlo VaR/ES (Week 2)
+
+10,000 seeded paths per forecast date, VaR/ES from empirical quantiles of
+simulated losses, under three DGPs:
+
+- **MV normal / MV Student-t**: for a linear portfolio the projection
+  w'X is exactly univariate (normal, or t with the same ν), so paths are
+  drawn from the projected distribution with Σ entering through w'Σw —
+  exact for this portfolio, would not survive optionality.
+- **GARCH(1,1)-t** (Bollerslev 1986): fitted on the portfolio series with
+  the `arch` package, parameters re-fit monthly on a trailing 1,000-day
+  window; between refits the variance recursion
+  σ²_t = ω + αε²_{t-1} + βσ²_{t-1} updates daily so forecasts react to
+  yesterday's shock. First forecast requires 750 days of history.
+
+Benchmarking result on the real 2006-2026 sample (SR 11-7 §5): exception
+counts vs ~49.5 expected — parametric/MC normal ≈ 156, Student-t ≈ 130,
+historical 77, GARCH-t 66. The ordering is the textbook one: constant-vol
+normal understates tails worst; fat tails help; conditional volatility
+helps most.
+
+## 6-7. Stress testing, narrative overlay
+
+Ship with Weeks 3-4; sections will be filled as the code lands.

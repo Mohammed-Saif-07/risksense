@@ -115,6 +115,7 @@ def historical_var_es(
             "horizon_days": horizon_days,
             "var": var_arr,
             "es": es_arr,
+            "var_at_es_level": es_cut,
             "window_days": window,
         }
     )

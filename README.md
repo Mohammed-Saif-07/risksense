@@ -85,7 +85,7 @@ Mapped to what a quantitative market risk seat actually involves:
 ## Roadmap (shipping weekly)
 
 - [x] **Week 1** — ingestion (S&P 500 + FRED), PySpark ETL, Historical VaR/ES, Kupiec + Basel traffic light, dashboard v0, CI
-- [ ] **Week 2** — parametric + Monte Carlo engines, Christoffersen + DQ tests, engine comparison page
+- [x] **Week 2** — parametric (Ledoit-Wolf) + Monte Carlo (normal/t/GARCH-t) engines, Christoffersen + DQ + Acerbi-Székely tests, engine comparison page
 - [ ] **Week 3** — stress testing module, full dashboard
 - [ ] **Week 4** — FinBERT narrative overlay, SR 11-7 validation report, polish
 

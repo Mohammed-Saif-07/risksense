@@ -33,6 +33,9 @@ VAR_RESULT_COLUMNS: list[str] = [
     "horizon_days",  # 1 for daily
     "var",  # positive loss fraction
     "es",  # positive loss fraction
+    "var_at_es_level",  # VaR at es_level (e.g. 97.5%) — used by the
+    #   Acerbi-Szekely ES backtest, whose exception indicator must be at the
+    #   same confidence level as the ES forecast
     "window_days",  # estimation window length
 ]
 
@@ -48,6 +51,7 @@ class VaRResult:
     horizon_days: int
     var: float
     es: float
+    var_at_es_level: float
     window_days: int
 
 
@@ -76,6 +80,14 @@ def validate_result_frame(df: pd.DataFrame) -> None:
         if bad.any():
             raise ValueError(
                 f"ES < VaR on {int(bad.sum())} rows at es_level >= var_level "
+                "— check engine tail logic"
+            )
+        # At the SAME level the coherence bound always applies:
+        # ES(es_level) >= VaR(es_level).
+        bad_same = df["es"] + 1e-12 < df["var_at_es_level"]
+        if bad_same.any():
+            raise ValueError(
+                f"ES < VaR at es_level on {int(bad_same.sum())} rows "
                 "— check engine tail logic"
             )
 
