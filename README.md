@@ -1,6 +1,6 @@
 # RiskSense
 
-![CI](https://github.com/YOUR_USERNAME/risksense/actions/workflows/ci.yml/badge.svg)
+![CI](https://github.com/Mohammed-Saif-07/risksense/actions/workflows/ci.yml/badge.svg)
 ![Coverage](https://img.shields.io/badge/coverage-70%25%2B-brightgreen)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 ![Python](https://img.shields.io/badge/python-3.10%2B-blue)
@@ -68,7 +68,7 @@ The four artifacts the dashboard reads (~1 MB of parquet and JSON) are committed
 ## Quickstart
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/risksense && cd risksense
+git clone https://github.com/Mohammed-Saif-07/risksense && cd risksense
 ./setup.sh                      # venv + deps + real data + full pipeline (~20 min)
 source .venv/bin/activate
 streamlit run dashboards/streamlit_app.py
