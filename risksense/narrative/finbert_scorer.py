@@ -1,4 +1,4 @@
-"""FinBERT narrative risk scoring (Week 4 — v2 differentiator).
+"""FinBERT narrative risk scoring (Month 4 — v2 differentiator).
 
 Paragraph-level FinBERT (ProsusAI/finbert) sentiment inference over 10-K
 Item 1A Risk Factors, batch-run on Google Colab's free GPU; embeddings and
@@ -10,5 +10,5 @@ from __future__ import annotations
 
 
 def score_filings(*args: object, **kwargs: object) -> None:
-    """Placeholder — implemented in Week 4. See module docstring."""
-    raise NotImplementedError("FinBERT scoring ships in Week 4.")
+    """Placeholder — implemented in Month 4. See module docstring."""
+    raise NotImplementedError("FinBERT scoring ships in Month 4.")

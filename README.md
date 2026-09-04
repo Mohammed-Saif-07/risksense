@@ -86,7 +86,7 @@ Five pages, one visual system. The categorical palette is assigned in fixed orde
 | VaR & Backtesting | Per-engine forecast vs realised P&L, exception markers, all four statistical tests, Basel traffic light |
 | Engine Comparison | Six engines head-to-head — exception ranking, VaR paths, full scoreboard table |
 | Stress Testing | 2008/COVID/SVB replay, eight hypothetical scenarios with attribution waterfalls, reverse stress search |
-| Narrative Risk | Week 4 — FinBERT overlay (in progress) |
+| Narrative Risk | Month 4 — FinBERT overlay (in progress) |
 
 ## What this demonstrates
 
@@ -115,12 +115,12 @@ Backtested over 2006-2026 against ~49.5 expected exceptions at 99% VaR:
 
 The ordering is the textbook one and two independent test families agree on it: constant-volatility normal models understate tail risk worst, fat tails help, and conditional volatility helps most. Every engine still fails the Dynamic Quantile test over the full sample — no single-regime model kept exceptions unpredictable across both 2008 and 2020. That is reported, not tuned away.
 
-## Roadmap (shipping weekly)
+## Roadmap (shipping monthly)
 
-- [x] **Week 1** — ingestion (S&P 500 + FRED), PySpark ETL, Historical VaR/ES, Kupiec + Basel traffic light, dashboard v0, CI
-- [x] **Week 2** — parametric (Ledoit-Wolf) + Monte Carlo (normal/t/GARCH-t) engines, Christoffersen + DQ + Acerbi-Székely tests, engine comparison page
-- [x] **Week 3** — stress testing (historical replay, 8 hypothetical scenarios, reverse stress), factor attribution waterfalls, stress dashboard page
-- [ ] **Week 4** — FinBERT narrative overlay, SR 11-7 validation report, polish
+- [x] **Month 1** — ingestion (S&P 500 + FRED), PySpark ETL, Historical VaR/ES, Kupiec + Basel traffic light, dashboard v0, CI
+- [x] **Month 2** — parametric (Ledoit-Wolf) + Monte Carlo (normal/t/GARCH-t) engines, Christoffersen + DQ + Acerbi-Székely tests, engine comparison page
+- [x] **Month 3** — stress testing (historical replay, 8 hypothetical scenarios, reverse stress), factor attribution waterfalls, stress dashboard page
+- [ ] **Month 4** — FinBERT narrative overlay, SR 11-7 validation report, polish
 
 ## Limitations (read this)
 

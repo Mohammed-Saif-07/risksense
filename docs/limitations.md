@@ -47,7 +47,7 @@ without documented limitations is a model risk. Expanded as modules ship.
     inflates the family-wise false-rejection rate; the validation report
     interprets results jointly, not as isolated verdicts.
 
-## Parametric & Monte Carlo engines (Week 2)
+## Parametric & Monte Carlo engines (Month 2)
 
 11. **Ledoit-Wolf conditions the matrix, not the world.** Shrinkage fixes
     the singularity of a 250×500 sample covariance; it does not make
@@ -70,7 +70,7 @@ without documented limitations is a model risk. Expanded as modules ship.
     clustering; the original prescribes simulating under the model's own
     dynamics.
 
-## Stress testing (Week 3)
+## Stress testing (Month 3)
 
 16. **The factor sample is three years long.** FRED's ICE BofA OAS series
     are license-capped to ~3 trailing years, so the betas are estimated on
@@ -98,7 +98,7 @@ without documented limitations is a model risk. Expanded as modules ship.
     which moves are equally painful — a modelling judgement, set in
     config and visible on the dashboard rather than buried.
 
-## Coming with Week 4
+## Coming with Month 4
 
 FinBERT domain shift on risk-factor language, and Granger ≠ causation for
 the NRS overlay.

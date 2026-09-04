@@ -1,7 +1,7 @@
 # Data ingestion parameters.
 
 prices:
-  # Start early enough that the 2008 GFC historical replay (Week 3) has
+  # Start early enough that the 2008 GFC historical replay (Month 3) has
   # actual constituent price paths, not just factor proxies.
   start_date: "2006-01-01"
   end_date: null            # null => today
@@ -23,7 +23,7 @@ macro:                      # FRED series (keyless fredgraph.csv endpoint)
     BAMLH0A0HYM2: hy_credit_oas    # ICE BofA HY corporate OAS
     DFF: fed_funds_rate
 
-filings:                    # Week 4 — SEC EDGAR
+filings:                    # Month 4 — SEC EDGAR
   user_agent_env: EDGAR_USER_AGENT   # SEC requires an identifying UA; set env var
   form_type: 10-K
   item: 1A

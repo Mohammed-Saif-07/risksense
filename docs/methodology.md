@@ -1,9 +1,9 @@
 # Methodology
 
 Full derivations and estimator choices for every RiskSense module. Sections
-are added as each weekly milestone ships; regulatory anchors are cited inline.
+are added as each monthly milestone ships; regulatory anchors are cited inline.
 
-## 1. Data and returns (Week 1)
+## 1. Data and returns (Month 1)
 
 - **Universe**: current S&P 500 constituents (cached from Wikipedia to
   `config/sp500_universe.csv`). Known limitation: survivorship bias — see
@@ -22,7 +22,7 @@ are added as each weekly milestone ships; regulatory anchors are cited inline.
   constituent log returns (exact for the arithmetic-return portfolio up to
   second-order terms; documented approximation).
 
-## 2. Historical Simulation VaR/ES (Week 1)
+## 2. Historical Simulation VaR/ES (Month 1)
 
 For forecast day *t*, the loss distribution is the empirical distribution of
 the previous 250 daily portfolio losses (Jorion 2007, ch. 10). No look-ahead:
@@ -54,7 +54,7 @@ the window ends at *t-1*.
   Green (0-4), Yellow (5-9, multiplier add-on 0.40-0.85), Red (10+, add-on
   1.00).
 
-## 4. Parametric VaR/ES (Week 2)
+## 4. Parametric VaR/ES (Month 2)
 
 Rolling variance-covariance VaR with the portfolio volatility from the full
 constituent covariance: σ_p² = w'Σw, Σ the **Ledoit-Wolf (2004)** shrunk
@@ -67,7 +67,7 @@ the rolling mean updates daily. Two innovation models:
   (ν = 4 + 6/κ, clipped to [3, 50]); closed-form ES per
   McNeil-Frey-Embrechts (2015) §2.3.
 
-## 5. Monte Carlo VaR/ES (Week 2)
+## 5. Monte Carlo VaR/ES (Month 2)
 
 10,000 seeded paths per forecast date, VaR/ES from empirical quantiles of
 simulated losses, under three DGPs:
@@ -88,7 +88,7 @@ historical 77, GARCH-t 66. The ordering is the textbook one: constant-vol
 normal understates tails worst; fat tails help; conditional volatility
 helps most.
 
-## 6. Stress testing (Week 3)
+## 6. Stress testing (Month 3)
 
 ### 6.1 Factor sensitivities
 
@@ -148,4 +148,4 @@ sitting exactly on the constraint.
 
 ## 7. Narrative overlay
 
-Ships with Week 4.
+Ships with Month 4.

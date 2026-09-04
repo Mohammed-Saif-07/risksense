@@ -20,7 +20,7 @@ addopts = "-q --strict-markers"
 [tool.coverage.run]
 source = ["risksense"]
 omit = [
-    # Weekly-milestone stubs are excluded until their code lands.
+    # Monthly-milestone stubs are excluded until their code lands.
     "risksense/stress/__main__.py",
     "risksense/narrative/*",
     "risksense/validation/*",

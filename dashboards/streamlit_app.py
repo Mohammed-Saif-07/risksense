@@ -2,7 +2,7 @@
 
 Pages: Portfolio Overview, VaR & Backtesting (per engine), Engine Comparison
 (all six head-to-head), Stress Testing (replay, scenarios, reverse), and the
-Week 4 narrative-risk placeholder.
+Month 4 narrative-risk placeholder.
 
 Visual language lives in ``dashboards/theme.py`` so every chart renders as
 one system. Run locally:  ``streamlit run dashboards/streamlit_app.py``.
@@ -786,11 +786,11 @@ def page_stress(portfolio: pd.DataFrame, stress: dict) -> None:
 
 
 def page_narrative() -> None:
-    """Roadmap page for the Week 4 milestone."""
+    """Roadmap page for the Month 4 milestone."""
     st.markdown(
         T.header(
             "Narrative Risk",
-            "Week 4 · In progress",
+            "Month 4 · In progress",
             "FinBERT sentiment over 10-K Item 1A Risk Factors, aggregated to a "
             "monthly firm-level Narrative Risk Score, then tested for Granger "
             "causality against VaR exceptions.",

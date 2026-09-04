@@ -1,4 +1,4 @@
-"""SR 11-7 aligned model validation report generator (Week 4).
+"""SR 11-7 aligned model validation report generator (Month 4).
 
 Generates ``docs/model_validation_report.md`` (and a PDF via pandoc when
 available) with the eight sections required by the project spec: purpose &
@@ -11,5 +11,5 @@ from __future__ import annotations
 
 
 def generate_report(*args: object, **kwargs: object) -> None:
-    """Placeholder — implemented in Week 4. See module docstring."""
-    raise NotImplementedError("Validation report generator ships in Week 4.")
+    """Placeholder — implemented in Month 4. See module docstring."""
+    raise NotImplementedError("Validation report generator ships in Month 4.")
