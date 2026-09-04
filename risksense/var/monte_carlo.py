@@ -186,12 +186,18 @@ def monte_carlo_var_es(
 
     if distribution == "garch_t":
         forecast_dates, mu_a, sig_a, nu_a = _fit_garch_path(
-            r, window, garch_refit_days, garch_fit_window, garch_min_window,
+            r,
+            window,
+            garch_refit_days,
+            garch_fit_window,
+            garch_min_window,
             dof_floor=dof_bounds[0],
         )
         used_window = garch_fit_window
 
-        def draw(g: np.random.Generator, shape: tuple[int, int], offset: int) -> np.ndarray:
+        def draw(
+            g: np.random.Generator, shape: tuple[int, int], offset: int
+        ) -> np.ndarray:
             nu_blk = nu_a[offset : offset + shape[0], None]
             return g.standard_t(nu_blk, size=shape) * np.sqrt((nu_blk - 2.0) / nu_blk)
 
@@ -216,7 +222,9 @@ def monte_carlo_var_es(
             kurt = r.rolling(window).kurt().shift(1).iloc[window:]
             nu_a = fit_dof_from_kurtosis(kurt, dof_bounds).to_numpy()
 
-            def draw(g: np.random.Generator, shape: tuple[int, int], offset: int) -> np.ndarray:
+            def draw(
+                g: np.random.Generator, shape: tuple[int, int], offset: int
+            ) -> np.ndarray:
                 nu_blk = nu_a[offset : offset + shape[0], None]
                 return g.standard_t(nu_blk, size=shape) * np.sqrt(
                     (nu_blk - 2.0) / nu_blk
@@ -224,7 +232,9 @@ def monte_carlo_var_es(
 
         else:
 
-            def draw(g: np.random.Generator, shape: tuple[int, int], offset: int) -> np.ndarray:
+            def draw(
+                g: np.random.Generator, shape: tuple[int, int], offset: int
+            ) -> np.ndarray:
                 return g.standard_normal(size=shape)
 
     var_arr, es_arr, var_es_arr = _simulate_location_scale(

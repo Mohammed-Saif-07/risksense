@@ -33,15 +33,15 @@ def run(output_path: Path | None = None) -> dict[str, Any]:
         print(f"  {k:16s} beta={b:+.3e} (se {sens.stderrs[k]:.1e})")
 
     hypo = hypothetical.run_all(sens)
-    for r in sorted(hypo, key=lambda r: -r.total_loss_frac):
-        print(f"  hypo {r.label:34s} loss {r.total_loss_frac:+7.2%}")
+    for scenario in sorted(hypo, key=lambda s: -s.total_loss_frac):
+        print(f"  hypo {scenario.label:34s} loss {scenario.total_loss_frac:+7.2%}")
 
     hist = historical_scenarios.run_all(returns, factors, sens)
-    for r in hist:
+    for replay in hist:
         print(
-            f"  hist {r.label:34s} loss {r.cumulative_loss_frac:7.2%} "
-            f"({r.n_days}d, worst day {r.worst_day_loss_frac:.2%}, "
-            f"maxDD {r.max_drawdown_frac:.2%})"
+            f"  hist {replay.label:34s} loss {replay.cumulative_loss_frac:7.2%} "
+            f"({replay.n_days}d, worst day {replay.worst_day_loss_frac:.2%}, "
+            f"maxDD {replay.max_drawdown_frac:.2%})"
         )
 
     rev = reverse_stress(sens)

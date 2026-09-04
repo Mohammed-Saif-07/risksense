@@ -29,8 +29,12 @@ class TestNormalMC:
         assert (out["method"] == "monte_carlo_normal").all()
 
     def test_seed_reproducibility(self, normal_returns: pd.Series) -> None:
-        a = monte_carlo_var_es(normal_returns, distribution="normal", n_paths=2_000, seed=9)
-        b = monte_carlo_var_es(normal_returns, distribution="normal", n_paths=2_000, seed=9)
+        a = monte_carlo_var_es(
+            normal_returns, distribution="normal", n_paths=2_000, seed=9
+        )
+        b = monte_carlo_var_es(
+            normal_returns, distribution="normal", n_paths=2_000, seed=9
+        )
         pd.testing.assert_frame_equal(a, b)
 
     def test_unknown_distribution_raises(self, normal_returns: pd.Series) -> None:

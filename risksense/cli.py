@@ -21,6 +21,7 @@ import argparse
 import json
 import time
 from collections.abc import Callable
+from functools import partial
 from pathlib import Path
 from typing import Any
 
@@ -77,54 +78,57 @@ def build_engines(
     mc_cfg = cfg["monte_carlo"]
     weights = load_config("portfolio").get("weights")
 
-    common = dict(
+    # Annotated dict[str, Any]: the shared kwargs mix int and float, which
+    # mypy would otherwise narrow to dict[str, float] and reject at every
+    # ``**common`` call site.
+    common: dict[str, Any] = dict(
         window=int(var_cfg["window_days"]),
         var_level=float(var_cfg["var_level"]),
         es_level=float(var_cfg["es_level"]),
         horizon_days=int(var_cfg["horizon_days"]),
     )
-    dof_bounds = tuple(float(b) for b in par_cfg["t_dof_bounds"])
+    lo, hi = par_cfg["t_dof_bounds"]
+    dof_bounds: tuple[float, float] = (float(lo), float(hi))
     lw_wide = wide if bool(par_cfg["ledoit_wolf_shrinkage"]) else None
     garch = mc_cfg["garch"]
 
+    # functools.partial rather than `lambda d=dist:` — the default-argument
+    # trick for binding a loop variable is easy to get subtly wrong (late
+    # binding) and mypy cannot check it against Callable[[], DataFrame].
     engines: dict[str, Callable[[], pd.DataFrame]] = {
-        "historical": lambda: historical_var_es(returns, **common),
+        "historical": partial(historical_var_es, returns, **common),
     }
     for dist in ("normal", "t"):
-        engines[f"parametric_{dist}"] = (
-            lambda d=dist: parametric_var_es(
-                returns,
-                wide_returns=lw_wide,
-                distribution=d,
-                cov_refit_days=int(par_cfg["cov_refit_days"]),
-                dof_bounds=dof_bounds,
-                weights=weights,
-                **common,
-            )
+        engines[f"parametric_{dist}"] = partial(
+            parametric_var_es,
+            returns,
+            wide_returns=lw_wide,
+            distribution=dist,
+            cov_refit_days=int(par_cfg["cov_refit_days"]),
+            dof_bounds=dof_bounds,
+            weights=weights,
+            **common,
         )
     for dist in mc_cfg["distributions"]:
-        engines[f"monte_carlo_{dist}"] = (
-            lambda d=dist: monte_carlo_var_es(
-                returns,
-                wide_returns=lw_wide,
-                distribution=d,
-                n_paths=int(mc_cfg["n_paths"]),
-                seed=int(mc_cfg["seed"]),
-                cov_refit_days=int(par_cfg["cov_refit_days"]),
-                dof_bounds=dof_bounds,
-                garch_refit_days=int(garch["refit_days"]),
-                garch_fit_window=int(garch["fit_window_days"]),
-                garch_min_window=int(garch["min_window_days"]),
-                weights=weights,
-                **common,
-            )
+        engines[f"monte_carlo_{dist}"] = partial(
+            monte_carlo_var_es,
+            returns,
+            wide_returns=lw_wide,
+            distribution=dist,
+            n_paths=int(mc_cfg["n_paths"]),
+            seed=int(mc_cfg["seed"]),
+            cov_refit_days=int(par_cfg["cov_refit_days"]),
+            dof_bounds=dof_bounds,
+            garch_refit_days=int(garch["refit_days"]),
+            garch_fit_window=int(garch["fit_window_days"]),
+            garch_min_window=int(garch["min_window_days"]),
+            weights=weights,
+            **common,
         )
     return engines
 
 
-def backtest_method(
-    result: pd.DataFrame, cfg: dict[str, Any]
-) -> dict[str, Any]:
+def backtest_method(result: pd.DataFrame, cfg: dict[str, Any]) -> dict[str, Any]:
     """Run the full backtest suite on one method's exception-flagged frame."""
     var_cfg, bt_cfg = cfg["var"], cfg["backtesting"]
     coverage = float(var_cfg["var_level"])

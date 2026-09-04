@@ -51,12 +51,8 @@ def compute_log_returns(prices: DataFrame, max_abs_return: float) -> DataFrame:
     w = Window.partitionBy("ticker").orderBy("date")
     df = prices.withColumn("prev_close", F.lag("adj_close").over(w))
     df = df.filter(F.col("prev_close").isNotNull())
-    df = df.withColumn(
-        "raw_return", F.log(F.col("adj_close") / F.col("prev_close"))
-    )
-    df = df.withColumn(
-        "winsorized", F.abs(F.col("raw_return")) > F.lit(max_abs_return)
-    )
+    df = df.withColumn("raw_return", F.log(F.col("adj_close") / F.col("prev_close")))
+    df = df.withColumn("winsorized", F.abs(F.col("raw_return")) > F.lit(max_abs_return))
     df = df.withColumn(
         "log_return",
         F.when(
@@ -67,7 +63,9 @@ def compute_log_returns(prices: DataFrame, max_abs_return: float) -> DataFrame:
     return df.select("date", "ticker", "adj_close", "log_return", "winsorized")
 
 
-def compute_portfolio_returns(returns: DataFrame, weights: dict[str, float] | None) -> DataFrame:
+def compute_portfolio_returns(
+    returns: DataFrame, weights: dict[str, float] | None
+) -> DataFrame:
     """Aggregate constituent returns to a single portfolio return series.
 
     ``weights=None`` means equal-weight across whatever tickers trade that
@@ -127,7 +125,9 @@ def run(
 
     n_days = portfolio.count()
     n_tickers = returns.select("ticker").distinct().count()
-    print(f"Wrote {returns_out} ({n_tickers} tickers) and {portfolio_out} ({n_days} days)")
+    print(
+        f"Wrote {returns_out} ({n_tickers} tickers) and {portfolio_out} ({n_days} days)"
+    )
     return portfolio_out
 
 

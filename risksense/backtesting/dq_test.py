@@ -95,9 +95,7 @@ def dq_test(
     y = hit[lags:]
     n = len(y)
     x = np.column_stack(
-        [np.ones(n)]
-        + [hit[lags - k : -k] for k in range(1, lags + 1)]
-        + [var_a[lags:]]
+        [np.ones(n)] + [hit[lags - k : -k] for k in range(1, lags + 1)] + [var_a[lags:]]
     )
 
     xtx = x.T @ x

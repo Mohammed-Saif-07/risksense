@@ -96,17 +96,28 @@ def page_overview(
     st.markdown(
         T.kpi_row(
             [
-                {"label": "VaR 99% · 1 day", "value": f"{latest['var']:.2%}",
-                 "note": "Basel III anchor"},
-                {"label": "ES 97.5% · 1 day", "value": f"{latest['es']:.2%}",
-                 "note": "FRTB standard"},
-                {"label": "Constituents",
-                 "value": f"{int(portfolio['n_constituents'].iloc[-1])}",
-                 "note": "after data-quality filters"},
-                {"label": "Basel zone · 250d", "value": zone.upper(),
-                 "note": f"{basel['n_exceptions']} exceptions · add-on "
-                         f"+{basel['multiplier_addon']:.2f}",
-                 "status": T.ZONE_STATUS[zone]},
+                {
+                    "label": "VaR 99% · 1 day",
+                    "value": f"{latest['var']:.2%}",
+                    "note": "Basel III anchor",
+                },
+                {
+                    "label": "ES 97.5% · 1 day",
+                    "value": f"{latest['es']:.2%}",
+                    "note": "FRTB standard",
+                },
+                {
+                    "label": "Constituents",
+                    "value": f"{int(portfolio['n_constituents'].iloc[-1])}",
+                    "note": "after data-quality filters",
+                },
+                {
+                    "label": "Basel zone · 250d",
+                    "value": zone.upper(),
+                    "note": f"{basel['n_exceptions']} exceptions · add-on "
+                    f"+{basel['multiplier_addon']:.2f}",
+                    "status": T.ZONE_STATUS[zone],
+                },
             ]
         ),
         unsafe_allow_html=True,
@@ -115,9 +126,12 @@ def page_overview(
     cum = (1.0 + portfolio.set_index("date")["portfolio_return"]).cumprod() - 1.0
     fig = go.Figure(
         go.Scatter(
-            x=cum.index, y=cum.values, mode="lines",
+            x=cum.index,
+            y=cum.values,
+            mode="lines",
             line={"color": T.SERIES[0], "width": 2},
-            fill="tozeroy", fillcolor="rgba(57,135,229,0.08)",
+            fill="tozeroy",
+            fillcolor="rgba(57,135,229,0.08)",
             name="Cumulative return",
             hovertemplate="%{x|%d %b %Y}<br>%{y:.1%}<extra></extra>",
         )
@@ -154,7 +168,9 @@ def page_var_backtest(var_results: pd.DataFrame, summary: dict) -> None:
     df = var_results[var_results["method"] == method]
     s = summary[method]
     k, c, d, e = (
-        s["kupiec"], s["christoffersen"], s["dynamic_quantile"],
+        s["kupiec"],
+        s["christoffersen"],
+        s["dynamic_quantile"],
         s["es_acerbi_szekely_z2"],
     )
     basel = s["basel_traffic_light_last_250d"]
@@ -162,15 +178,27 @@ def page_var_backtest(var_results: pd.DataFrame, summary: dict) -> None:
     st.markdown(
         T.kpi_row(
             [
-                {"label": "Exceptions", "value": f"{k['n_exceptions']}",
-                 "note": f"expected {k['expected_exceptions']:.1f}"},
-                {"label": "Exception rate", "value": f"{k['exception_rate']:.2%}",
-                 "note": "target 1.00%"},
-                {"label": "Forecast days", "value": f"{s['n_forecast_days']:,}",
-                 "note": f"from {s['first_date']}"},
-                {"label": "Basel zone · 250d", "value": basel["zone"].upper(),
-                 "note": f"{basel['n_exceptions']} exceptions",
-                 "status": T.ZONE_STATUS[basel["zone"]]},
+                {
+                    "label": "Exceptions",
+                    "value": f"{k['n_exceptions']}",
+                    "note": f"expected {k['expected_exceptions']:.1f}",
+                },
+                {
+                    "label": "Exception rate",
+                    "value": f"{k['exception_rate']:.2%}",
+                    "note": "target 1.00%",
+                },
+                {
+                    "label": "Forecast days",
+                    "value": f"{s['n_forecast_days']:,}",
+                    "note": f"from {s['first_date']}",
+                },
+                {
+                    "label": "Basel zone · 250d",
+                    "value": basel["zone"].upper(),
+                    "note": f"{basel['n_exceptions']} exceptions",
+                    "status": T.ZONE_STATUS[basel["zone"]],
+                },
             ]
         ),
         unsafe_allow_html=True,
@@ -180,7 +208,9 @@ def page_var_backtest(var_results: pd.DataFrame, summary: dict) -> None:
     fig = go.Figure()
     fig.add_trace(
         go.Scatter(
-            x=df["date"], y=df["realized_return"], mode="lines",
+            x=df["date"],
+            y=df["realized_return"],
+            mode="lines",
             name="Realised return",
             line={"color": T.REALIZED, "width": 1},
             hovertemplate="%{y:.2%}<extra>Realised</extra>",
@@ -188,14 +218,20 @@ def page_var_backtest(var_results: pd.DataFrame, summary: dict) -> None:
     )
     fig.add_trace(
         go.Scatter(
-            x=df["date"], y=-df["var"], mode="lines", name="VaR 99% bound",
+            x=df["date"],
+            y=-df["var"],
+            mode="lines",
+            name="VaR 99% bound",
             line={"color": T.METHOD_COLORS[method], "width": 2},
             hovertemplate="%{y:.2%}<extra>VaR 99%</extra>",
         )
     )
     fig.add_trace(
         go.Scatter(
-            x=df["date"], y=-df["es"], mode="lines", name="ES 97.5% (FRTB)",
+            x=df["date"],
+            y=-df["es"],
+            mode="lines",
+            name="ES 97.5% (FRTB)",
             line={"color": T.METHOD_COLORS[method], "width": 1, "dash": "dot"},
             opacity=0.75,
             hovertemplate="%{y:.2%}<extra>ES 97.5%</extra>",
@@ -203,10 +239,11 @@ def page_var_backtest(var_results: pd.DataFrame, summary: dict) -> None:
     )
     fig.add_trace(
         go.Scatter(
-            x=exc["date"], y=exc["realized_return"], mode="markers",
+            x=exc["date"],
+            y=exc["realized_return"],
+            mode="markers",
             name=f"Exception ({len(exc)})",
-            marker={"color": T.LOSS, "size": 8, "symbol": "x",
-                    "line": {"width": 0}},
+            marker={"color": T.LOSS, "size": 8, "symbol": "x", "line": {"width": 0}},
             hovertemplate="%{x|%d %b %Y}<br>loss %{y:.2%}<extra>Exception</extra>",
         )
     )
@@ -219,55 +256,69 @@ def page_var_backtest(var_results: pd.DataFrame, summary: dict) -> None:
     )
 
     left, right = st.columns([3, 2])
-    with left, T.card(
-        "Statistical test suite",
-        "p &lt; 0.05 rejects the null hypothesis named on each row.",
+    with (
+        left,
+        T.card(
+            "Statistical test suite",
+            "p &lt; 0.05 rejects the null hypothesis named on each row.",
+        ),
     ):
         v, sst = verdict(k["reject_h0"], "coverage OK", "coverage rejected")
         rows = T.test_row(
             "Kupiec POF · unconditional coverage",
-            f"LR {k['lr_stat']:.2f} · p {k['p_value']:.4f}", v, sst,
+            f"LR {k['lr_stat']:.2f} · p {k['p_value']:.4f}",
+            v,
+            sst,
         )
         v, sst = verdict(c["reject_independence"], "independent", "clustered")
         rows += T.test_row(
             "Christoffersen · independence",
             f"π01 {c['pi01']:.3f} · π11 {c['pi11']:.3f} · p {c['p_ind']:.4f}",
-            v, sst,
+            v,
+            sst,
         )
-        v, sst = verdict(
-            c["reject_conditional_coverage"], "joint OK", "joint rejected"
-        )
+        v, sst = verdict(c["reject_conditional_coverage"], "joint OK", "joint rejected")
         rows += T.test_row(
             "Christoffersen · conditional coverage",
-            f"LR_cc {c['lr_cc']:.2f} · p {c['p_cc']:.4f}", v, sst,
+            f"LR_cc {c['lr_cc']:.2f} · p {c['p_cc']:.4f}",
+            v,
+            sst,
         )
         v, sst = verdict(d["reject_h0"], "unpredictable", "predictable")
         rows += T.test_row(
             f"Dynamic Quantile · {d['lags']} lags",
-            f"DQ {d['dq_stat']:.2f} · p {d['p_value']:.4f}", v, sst,
+            f"DQ {d['dq_stat']:.2f} · p {d['p_value']:.4f}",
+            v,
+            sst,
         )
         v, sst = verdict(e["reject_h0"], "ES adequate", "ES understated")
         rows += T.test_row(
             "Acerbi-Székely Z₂ · ES adequacy",
-            f"Z₂ {e['z2_stat']:+.3f} · p {e['p_value']:.4f}", v, sst,
+            f"Z₂ {e['z2_stat']:+.3f} · p {e['p_value']:.4f}",
+            v,
+            sst,
         )
         st.markdown(rows, unsafe_allow_html=True)
 
-    with right, T.card(
-        "Basel traffic light",
-        "Exceptions in the trailing 250 days (BCBS 1996).",
+    with (
+        right,
+        T.card(
+            "Basel traffic light",
+            "Exceptions in the trailing 250 days (BCBS 1996).",
+        ),
     ):
         zone = basel["zone"]
         color = T.STATUS[T.ZONE_STATUS[zone]]
         st.markdown(
             f'<div style="background:{color}14;border:1px solid {color}44;'
-            f"border-radius:10px;padding:1rem;text-align:center;margin:.6rem 0\">"
+            f'border-radius:10px;padding:1rem;text-align:center;margin:.6rem 0">'
             f'<div style="font-size:1.5rem;font-weight:650;color:{color}">'
             f"{zone.upper()}</div>"
             f'<div style="font-size:.8rem;color:{T.TEXT_SECONDARY};margin-top:.15rem">'
             f"{basel['n_exceptions']} exceptions in 250 days</div></div>"
             + T.test_row(
-                "Capital multiplier add-on", f"+{basel['multiplier_addon']:.2f}",
+                "Capital multiplier add-on",
+                f"+{basel['multiplier_addon']:.2f}",
                 "no add-on" if basel["multiplier_addon"] == 0 else "add-on",
                 "good" if basel["multiplier_addon"] == 0 else "warning",
             )
@@ -321,10 +372,13 @@ def page_comparison(var_results: pd.DataFrame, summary: dict) -> None:
     for _, r in order.iterrows():
         fig.add_trace(
             go.Bar(
-                x=[r["Exceptions"]], y=[T.METHOD_SHORT[r["method"]]],
-                orientation="h", name=r["Engine"],
+                x=[r["Exceptions"]],
+                y=[T.METHOD_SHORT[r["method"]]],
+                orientation="h",
+                name=r["Engine"],
                 marker={"color": T.METHOD_COLORS[r["method"]], "cornerradius": 4},
-                width=0.6, showlegend=False,
+                width=0.6,
+                showlegend=False,
                 hovertemplate=(
                     f"{r['Engine']}<br>%{{x}} exceptions vs "
                     f"{r['Expected']} expected<extra></extra>"
@@ -336,7 +390,8 @@ def page_comparison(var_results: pd.DataFrame, summary: dict) -> None:
     # full-sample engines share; each bar's own expectation is in its hover.
     expected = float(board["Expected"].mode().iloc[0])
     fig.add_vline(
-        x=expected, line={"color": T.TEXT_MUTED, "width": 1},
+        x=expected,
+        line={"color": T.TEXT_MUTED, "width": 1},
         annotation_text=f"expected {expected:.0f} at 1%",
         annotation_position="bottom right",
         annotation_font={"size": 11, "color": T.TEXT_MUTED},
@@ -370,12 +425,12 @@ def page_comparison(var_results: pd.DataFrame, summary: dict) -> None:
             continue
         fig2.add_trace(
             go.Scatter(
-                x=sub["date"], y=sub["var"], mode="lines",
+                x=sub["date"],
+                y=sub["var"],
+                mode="lines",
                 name=T.METHOD_SHORT[method],
                 line={"color": T.METHOD_COLORS[method], "width": 1.8},
-                hovertemplate="%{y:.2%}<extra>"
-                + T.METHOD_SHORT[method]
-                + "</extra>",
+                hovertemplate="%{y:.2%}<extra>" + T.METHOD_SHORT[method] + "</extra>",
             )
         )
     T.style_fig(fig2, height=420, y_tickformat=".0%")
@@ -395,7 +450,8 @@ def page_comparison(var_results: pd.DataFrame, summary: dict) -> None:
     ):
         st.dataframe(
             board.drop(columns=["method"]),
-            use_container_width=True, hide_index=True,
+            use_container_width=True,
+            hide_index=True,
             column_config={
                 "Rate": st.column_config.NumberColumn("Rate %", format="%.2f"),
                 "Kupiec p": st.column_config.NumberColumn(format="%.4f"),
@@ -421,11 +477,14 @@ def _replay_tab(portfolio: pd.DataFrame, stress: dict) -> None:
     st.markdown(
         T.kpi_row(
             [
-                {"label": h["label"].split(" / ")[0],
-                 "value": f"−{h['cumulative_loss_frac']:.1%}",
-                 "note": f"max drawdown {h['max_drawdown_frac']:.1%}",
-                 "status": "critical" if h["cumulative_loss_frac"] > 0.2
-                 else "warning"}
+                {
+                    "label": h["label"].split(" / ")[0],
+                    "value": f"−{h['cumulative_loss_frac']:.1%}",
+                    "note": f"max drawdown {h['max_drawdown_frac']:.1%}",
+                    "status": (
+                        "critical" if h["cumulative_loss_frac"] > 0.2 else "warning"
+                    ),
+                }
                 for h in hist
             ]
         ),
@@ -435,14 +494,17 @@ def _replay_tab(portfolio: pd.DataFrame, stress: dict) -> None:
     names = {h["label"]: h for h in hist}
     chosen = st.selectbox("Crisis window", list(names))
     h = names[chosen]
-    window = portfolio.set_index("date")["portfolio_return"].loc[h["start"]:h["end"]]
+    window = portfolio.set_index("date")["portfolio_return"].loc[h["start"] : h["end"]]
     wealth = (1.0 + window).cumprod() - 1.0
 
     fig = go.Figure(
         go.Scatter(
-            x=wealth.index, y=wealth.values, mode="lines",
+            x=wealth.index,
+            y=wealth.values,
+            mode="lines",
             line={"color": T.LOSS, "width": 2},
-            fill="tozeroy", fillcolor="rgba(208,59,59,0.10)",
+            fill="tozeroy",
+            fillcolor="rgba(208,59,59,0.10)",
             name="Cumulative return",
             hovertemplate="%{x|%d %b %Y}<br>%{y:.1%}<extra></extra>",
         )
@@ -450,12 +512,19 @@ def _replay_tab(portfolio: pd.DataFrame, stress: dict) -> None:
     trough = wealth.idxmin()
     fig.add_trace(
         go.Scatter(
-            x=[trough], y=[wealth.min()], mode="markers+text",
-            marker={"color": T.LOSS, "size": 9,
-                    "line": {"color": T.SURFACE, "width": 2}},
-            text=[f"  trough {wealth.min():.1%}"], textposition="middle right",
+            x=[trough],
+            y=[wealth.min()],
+            mode="markers+text",
+            marker={
+                "color": T.LOSS,
+                "size": 9,
+                "line": {"color": T.SURFACE, "width": 2},
+            },
+            text=[f"  trough {wealth.min():.1%}"],
+            textposition="middle right",
             textfont={"size": 11, "color": T.TEXT_SECONDARY},
-            hoverinfo="skip", showlegend=False,
+            hoverinfo="skip",
+            showlegend=False,
         )
     )
     T.style_fig(fig, height=340, y_tickformat=".0%", legend=False)
@@ -506,8 +575,7 @@ def _scenario_tab(stress: dict) -> None:
         )
     )
     fig.add_vline(x=0, line={"color": T.BASELINE, "width": 1})
-    T.style_fig(fig, height=360, x_tickformat=".0%", legend=False,
-                hovermode="closest")
+    T.style_fig(fig, height=360, x_tickformat=".0%", legend=False, hovermode="closest")
     fig.update_yaxes(autorange="reversed")
     T.chart_card(
         "Scenario P&L",
@@ -522,10 +590,13 @@ def _scenario_tab(stress: dict) -> None:
     contrib = {k: v for k, v in s["contributions"].items() if v != 0.0}
 
     col_a, col_b = st.columns([3, 2])
-    with col_a, T.card(
-        "Factor attribution",
-        f"{s['label']} — components sum to the "
-        f"{s['total_loss_frac']:.2%} total",
+    with (
+        col_a,
+        T.card(
+            "Factor attribution",
+            f"{s['label']} — components sum to the "
+            f"{s['total_loss_frac']:.2%} total",
+        ),
     ):
         if contrib:
             wf = go.Figure(
@@ -541,8 +612,9 @@ def _scenario_tab(stress: dict) -> None:
                     hovertemplate="%{x}<br>%{y:.2%}<extra></extra>",
                 )
             )
-            T.style_fig(wf, height=300, y_tickformat=".0%", legend=False,
-                        hovermode="closest")
+            T.style_fig(
+                wf, height=300, y_tickformat=".0%", legend=False, hovermode="closest"
+            )
             st.plotly_chart(wf, use_container_width=True, config=T.PLOTLY_CONFIG)
         else:
             st.markdown(T.note("No non-zero components."), unsafe_allow_html=True)
@@ -551,7 +623,8 @@ def _scenario_tab(stress: dict) -> None:
         st.markdown(
             "".join(
                 T.test_row(
-                    T.COMPONENT_LABELS.get(k, k), f"{v:+.2%}",
+                    T.COMPONENT_LABELS.get(k, k),
+                    f"{v:+.2%}",
                     "loss" if v > 0 else ("gain" if v < 0 else "flat"),
                     "critical" if v > 0 else ("good" if v < 0 else "warning"),
                 )
@@ -563,9 +636,7 @@ def _scenario_tab(stress: dict) -> None:
             st.markdown(
                 T.note(
                     "<strong>Double-count guard.</strong> "
-                    + ", ".join(
-                        T.COMPONENT_LABELS.get(k, k) for k in s["suppressed"]
-                    )
+                    + ", ".join(T.COMPONENT_LABELS.get(k, k) for k in s["suppressed"])
                     + " contribute zero here. The betas are <em>marginal</em> "
                     "— they already encode the equity move that accompanies a "
                     "macro shock — so adding them on top of an explicit equity "
@@ -577,20 +648,26 @@ def _scenario_tab(stress: dict) -> None:
     heat = pd.DataFrame(
         {
             s["label"]: {
-                T.COMPONENT_LABELS.get(k, k): v
-                for k, v in s["contributions"].items()
+                T.COMPONENT_LABELS.get(k, k): v for k, v in s["contributions"].items()
             }
             for s in hypo
         }
     )
     hm = go.Figure(
         go.Heatmap(
-            z=heat.to_numpy(), x=list(heat.columns), y=list(heat.index),
+            z=heat.to_numpy(),
+            x=list(heat.columns),
+            y=list(heat.index),
             colorscale=[[0, T.SERIES[0]], [0.5, "#2a3040"], [1, T.LOSS]],
-            zmid=0, xgap=2, ygap=2,
-            colorbar={"tickformat": ".0%", "outlinewidth": 0,
-                      "tickfont": {"size": 11, "color": T.TEXT_MUTED},
-                      "thickness": 12},
+            zmid=0,
+            xgap=2,
+            ygap=2,
+            colorbar={
+                "tickformat": ".0%",
+                "outlinewidth": 0,
+                "tickfont": {"size": 11, "color": T.TEXT_MUTED},
+                "thickness": 12,
+            },
             hovertemplate="%{x}<br>%{y}: %{z:.2%}<extra></extra>",
         )
     )
@@ -616,18 +693,19 @@ def _reverse_tab(stress: dict) -> None:
                 {
                     "label": T.COMPONENT_LABELS.get(f.replace("_bp", ""), f),
                     "value": (
-                        f"{v:.2%}" if f == "equity"
-                        else f"{v:+.1f} {units.get(f, '')}"
+                        f"{v:.2%}" if f == "equity" else f"{v:+.1f} {units.get(f, '')}"
                     ),
                     "note": "shock required",
                 }
                 for f, v in rev["shocks"].items()
             ]
             + [
-                {"label": "Achieved loss",
-                 "value": f"{rev['achieved_loss_frac']:.2%}",
-                 "note": f"target {rev['target_loss_frac']:.0%}",
-                 "status": "critical"},
+                {
+                    "label": "Achieved loss",
+                    "value": f"{rev['achieved_loss_frac']:.2%}",
+                    "note": f"target {rev['target_loss_frac']:.0%}",
+                    "status": "critical",
+                },
             ]
         ),
         unsafe_allow_html=True,
@@ -644,8 +722,9 @@ def _reverse_tab(stress: dict) -> None:
     )
     if rev["binding_bounds"]:
         st.markdown(
-            T.note("Bounds binding at the optimum: "
-                   + ", ".join(rev["binding_bounds"])),
+            T.note(
+                "Bounds binding at the optimum: " + ", ".join(rev["binding_bounds"])
+            ),
             unsafe_allow_html=True,
         )
 
@@ -665,23 +744,21 @@ def _reverse_tab(stress: dict) -> None:
                     "Beta (return per bp)": [
                         f"{v:+.3e}" for v in sens["betas"].values()
                     ],
-                    "Std error (HC1)": [
-                        f"{v:.1e}" for v in sens["stderrs"].values()
-                    ],
+                    "Std error (HC1)": [f"{v:.1e}" for v in sens["stderrs"].values()],
                     "t-stat": [
                         f"{b / se:+.2f}"
                         for b, se in zip(
-                            sens["betas"].values(), sens["stderrs"].values(),
+                            sens["betas"].values(),
+                            sens["stderrs"].values(),
                             strict=True,
                         )
                     ],
                 }
             ),
-            use_container_width=True, hide_index=True,
+            use_container_width=True,
+            hide_index=True,
         )
-        st.markdown(
-            "".join(T.note(n) for n in sens["notes"]), unsafe_allow_html=True
-        )
+        st.markdown("".join(T.note(n) for n in sens["notes"]), unsafe_allow_html=True)
 
 
 def page_stress(portfolio: pd.DataFrame, stress: dict) -> None:
@@ -746,8 +823,13 @@ def sidebar() -> str:
         )
         page = st.radio(
             "Navigation",
-            ["Portfolio Overview", "VaR & Backtesting", "Engine Comparison",
-             "Stress Testing", "Narrative Risk"],
+            [
+                "Portfolio Overview",
+                "VaR & Backtesting",
+                "Engine Comparison",
+                "Stress Testing",
+                "Narrative Risk",
+            ],
             label_visibility="collapsed",
         )
         st.markdown(
@@ -763,7 +845,7 @@ def sidebar() -> str:
         )
         st.markdown(
             f'<div style="border-top:1px solid {T.BORDER};margin-top:1.1rem;'
-            f'padding-top:.9rem;font-size:.72rem;color:{T.TEXT_MUTED};'
+            f"padding-top:.9rem;font-size:.72rem;color:{T.TEXT_MUTED};"
             'line-height:1.6">Personal research project on real S&amp;P 500 '
             "data. Not investment advice and not a production risk system; "
             "the limitations are documented in the repository.</div>",
@@ -779,8 +861,11 @@ def main() -> None:
         portfolio, var_results, summary = load_outputs()
     except FileNotFoundError:
         st.markdown(
-            T.header("Pipeline outputs not found", "Setup required",
-                     "Generate the data before launching the dashboard."),
+            T.header(
+                "Pipeline outputs not found",
+                "Setup required",
+                "Generate the data before launching the dashboard.",
+            ),
             unsafe_allow_html=True,
         )
         st.code(
@@ -803,12 +888,17 @@ def main() -> None:
         stress = load_stress()
         if stress is None:
             st.markdown(
-                T.header("Stress results not found", "Setup required",
-                         "Run the stress suite to populate this page."),
+                T.header(
+                    "Stress results not found",
+                    "Setup required",
+                    "Run the stress suite to populate this page.",
+                ),
                 unsafe_allow_html=True,
             )
-            st.code("python data/ingest_macro.py\npython -m risksense.stress",
-                    language="bash")
+            st.code(
+                "python data/ingest_macro.py\npython -m risksense.stress",
+                language="bash",
+            )
         else:
             page_stress(portfolio, stress)
     else:

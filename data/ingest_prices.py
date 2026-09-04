@@ -62,9 +62,7 @@ def load_universe(cache_path: Path) -> list[str]:
     return sorted(tickers)
 
 
-def fetch_yahoo_batch(
-    tickers: list[str], start: str, end: str
-) -> pd.DataFrame:
+def fetch_yahoo_batch(tickers: list[str], start: str, end: str) -> pd.DataFrame:
     """Download one batch of tickers from Yahoo, long format.
 
     Uses ``auto_adjust=True`` so ``Close`` is split/dividend adjusted —
@@ -165,7 +163,9 @@ def ingest(
                 print(f"  batch {i // batch_size}: attempt {attempt} failed: {exc}")
                 time.sleep(wait_s * attempt)
         else:
-            df = pd.DataFrame(columns=["date", "ticker", "adj_close", "volume", "source"])
+            df = pd.DataFrame(
+                columns=["date", "ticker", "adj_close", "volume", "source"]
+            )
         frames.append(df)
         got |= set(df["ticker"].unique())
         print(
@@ -184,7 +184,9 @@ def ingest(
             try:
                 df = fetch_yahoo_batch([t], start, end)
             except Exception:
-                df = pd.DataFrame(columns=["date", "ticker", "adj_close", "volume", "source"])
+                df = pd.DataFrame(
+                    columns=["date", "ticker", "adj_close", "volume", "source"]
+                )
             if not df.empty:
                 frames.append(df)
                 got.add(t)

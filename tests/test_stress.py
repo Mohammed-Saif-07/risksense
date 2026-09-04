@@ -80,8 +80,11 @@ class TestHypothetical:
     def test_waterfall_sums_to_total(self, sens: FactorSensitivities) -> None:
         res = apply_scenario(
             "combo",
-            {"equity_shock": -0.20, "ig_oas_bp": 150,
-             "curve_shift_bp": {"2y": -50, "10y": 25, "30y": 75}},
+            {
+                "equity_shock": -0.20,
+                "ig_oas_bp": 150,
+                "curve_shift_bp": {"2y": -50, "10y": 25, "30y": 75},
+            },
             sens,
             notional_usd=2_000_000,
         )
@@ -176,11 +179,16 @@ class TestReverseStress:
         "credit_ig_bp": [-1000.0, 1000.0],
     }
 
-    def test_matches_closed_form_when_unbounded(self, sens: FactorSensitivities) -> None:
+    def test_matches_closed_form_when_unbounded(
+        self, sens: FactorSensitivities
+    ) -> None:
         factors = ["equity", "rates_level_bp", "credit_ig_bp"]
         res = reverse_stress(
-            sens, target_loss_frac=0.15, factors=factors,
-            scales=self.SCALES, bounds=self.WIDE_BOUNDS,
+            sens,
+            target_loss_frac=0.15,
+            factors=factors,
+            scales=self.SCALES,
+            bounds=self.WIDE_BOUNDS,
         )
         beta = np.array([1.0, sens.betas["rates_level_bp"], sens.betas["credit_ig_bp"]])
         s = np.array([0.01, 10.0, 10.0])
@@ -197,9 +205,11 @@ class TestReverseStress:
             "credit_ig_bp": [0.0, 500.0],
         }
         res = reverse_stress(
-            sens, target_loss_frac=0.10,
+            sens,
+            target_loss_frac=0.10,
             factors=["equity", "rates_level_bp", "credit_ig_bp"],
-            scales=self.SCALES, bounds=bounds,
+            scales=self.SCALES,
+            bounds=bounds,
         )
         assert res.achieved_loss_frac >= 0.10 * (1 - 1e-4)
         assert "equity" in res.binding_bounds
@@ -212,7 +222,9 @@ class TestReverseStress:
         }
         with pytest.raises(RuntimeError, match="infeasible"):
             reverse_stress(
-                sens, target_loss_frac=0.50,
+                sens,
+                target_loss_frac=0.50,
                 factors=["equity", "rates_level_bp", "credit_ig_bp"],
-                scales=self.SCALES, bounds=bounds,
+                scales=self.SCALES,
+                bounds=bounds,
             )

@@ -63,10 +63,17 @@ class TestCliRun:
             on_disk = json.load(fh)
         assert on_disk == summary
         for m in methods:
-            assert {"kupiec", "christoffersen", "dynamic_quantile",
-                    "es_acerbi_szekely_z2", "basel_traffic_light_last_250d"} <= set(on_disk[m])
+            assert {
+                "kupiec",
+                "christoffersen",
+                "dynamic_quantile",
+                "es_acerbi_szekely_z2",
+                "basel_traffic_light_last_250d",
+            } <= set(on_disk[m])
             assert on_disk[m]["basel_traffic_light_last_250d"]["zone"] in {
-                "green", "yellow", "red",
+                "green",
+                "yellow",
+                "red",
             }
 
     def test_unknown_method_raises(self, processed_dir: Path) -> None:

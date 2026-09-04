@@ -57,9 +57,7 @@ class ReverseStressResult:
         return asdict(self)
 
 
-def _effective_betas(
-    factors: list[str], sens: FactorSensitivities
-) -> np.ndarray:
+def _effective_betas(factors: list[str], sens: FactorSensitivities) -> np.ndarray:
     """Loss sensitivity per factor: loss = -(Σ beta_i · x_i)."""
     betas = []
     for f in factors:
@@ -97,7 +95,11 @@ def reverse_stress(
     from scipy.optimize import minimize
 
     cfg = load_config("scenarios")["reverse"]
-    target = float(target_loss_frac if target_loss_frac is not None else cfg["target_loss_fraction"])
+    target = float(
+        target_loss_frac
+        if target_loss_frac is not None
+        else cfg["target_loss_fraction"]
+    )
     factors = list(factors if factors is not None else cfg["factors"])
     scales_map = dict(scales if scales is not None else cfg["scales"])
     bounds_map = dict(bounds if bounds is not None else cfg["bounds"])

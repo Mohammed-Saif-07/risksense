@@ -240,9 +240,7 @@ def kpi_row(items: list[dict[str, Any]]) -> str:
     cards = []
     for it in items:
         color = STATUS[it["status"]] if it.get("status") else TEXT_PRIMARY
-        note = (
-            f'<div class="rs-kpi-note">{it["note"]}</div>' if it.get("note") else ""
-        )
+        note = f'<div class="rs-kpi-note">{it["note"]}</div>' if it.get("note") else ""
         cards.append(
             f'<div class="rs-kpi"><div class="rs-kpi-label">{it["label"]}</div>'
             f'<div class="rs-kpi-value" style="color:{color}">{it["value"]}</div>'

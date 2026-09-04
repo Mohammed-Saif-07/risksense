@@ -92,9 +92,7 @@ def validate_result_frame(df: pd.DataFrame) -> None:
             )
 
 
-def realized_exceptions(
-    result: pd.DataFrame, returns: pd.Series
-) -> pd.DataFrame:
+def realized_exceptions(result: pd.DataFrame, returns: pd.Series) -> pd.DataFrame:
     """Join VaR forecasts with realised returns and flag exceptions.
 
     Parameters

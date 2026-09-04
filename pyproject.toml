@@ -39,7 +39,9 @@ select = ["E", "F", "I", "W", "UP", "B", "SIM"]
 ignore = ["E501"]  # long lines in docstring references
 
 [tool.mypy]
-python_version = "3.10"
+# No pinned python_version: mypy then targets the running interpreter, so the
+# CI matrix checks 3.10 and 3.12 each against their own stubs. Pinning 3.10
+# made mypy reject numpy's own stubs (they use 3.12 `type` statements).
 warn_unused_ignores = true
 disallow_untyped_defs = true
 ignore_missing_imports = true

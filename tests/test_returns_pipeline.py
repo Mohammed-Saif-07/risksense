@@ -29,9 +29,11 @@ def price_frame(spark):
     rows = []
     for t, base in [("AAA", 100.0), ("BBB", 50.0)]:
         for i, d in enumerate(dates):
-            rows.append((d.to_pydatetime(), t, base * (1.01 ** i), 1000.0, "yahoo"))
+            rows.append((d.to_pydatetime(), t, base * (1.01**i), 1000.0, "yahoo"))
     rows.append((dates[3].to_pydatetime(), "AAA", -5.0, 0.0, "stooq"))  # bad price
-    rows.append((dates[4].to_pydatetime(), "BBB", 50.0 * 1.01**4, 1000.0, "stooq"))  # dupe
+    rows.append(
+        (dates[4].to_pydatetime(), "BBB", 50.0 * 1.01**4, 1000.0, "stooq")
+    )  # dupe
     return spark.createDataFrame(
         rows, ["date", "ticker", "adj_close", "volume", "source"]
     )
@@ -66,7 +68,9 @@ class TestReturns:
             (dates[1].to_pydatetime(), "CCC", 300.0, 0.0, "yahoo"),  # +110% log
             (dates[2].to_pydatetime(), "CCC", 300.0, 0.0, "yahoo"),
         ]
-        df = spark.createDataFrame(rows, ["date", "ticker", "adj_close", "volume", "source"])
+        df = spark.createDataFrame(
+            rows, ["date", "ticker", "adj_close", "volume", "source"]
+        )
         out = compute_log_returns(df, max_abs_return=0.60).toPandas()
         flagged = out[out["winsorized"]]
         assert len(flagged) == 1

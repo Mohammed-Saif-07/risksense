@@ -8,11 +8,23 @@ from risksense.backtesting.basel_traffic_light import basel_traffic_light
 
 
 class TestBaselZones:
-    @pytest.mark.parametrize("x,zone", [(0, "green"), (4, "green"), (5, "yellow"), (9, "yellow"), (10, "red"), (25, "red")])
+    @pytest.mark.parametrize(
+        "x,zone",
+        [
+            (0, "green"),
+            (4, "green"),
+            (5, "yellow"),
+            (9, "yellow"),
+            (10, "red"),
+            (25, "red"),
+        ],
+    )
     def test_zone_boundaries(self, x: int, zone: str) -> None:
         assert basel_traffic_light(x).zone == zone
 
-    @pytest.mark.parametrize("x,addon", [(4, 0.0), (5, 0.40), (7, 0.65), (9, 0.85), (10, 1.0)])
+    @pytest.mark.parametrize(
+        "x,addon", [(4, 0.0), (5, 0.40), (7, 0.65), (9, 0.85), (10, 1.0)]
+    )
     def test_bcbs_multiplier_addons(self, x: int, addon: float) -> None:
         assert basel_traffic_light(x).multiplier_addon == pytest.approx(addon)
 

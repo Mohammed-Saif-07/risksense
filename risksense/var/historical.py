@@ -87,9 +87,7 @@ def historical_var_es(
         )
     r = returns.dropna().astype(float)
     if len(r) <= window:
-        raise ValueError(
-            f"Need more than window={window} observations, got {len(r)}"
-        )
+        raise ValueError(f"Need more than window={window} observations, got {len(r)}")
     if not r.index.is_monotonic_increasing:
         r = r.sort_index()
 

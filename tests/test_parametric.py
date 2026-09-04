@@ -67,9 +67,9 @@ class TestStudentTEngine:
         closed = stats.t.pdf(tq, nu) / (1 - q) * (nu + tq**2) / (nu - 1)
         from scipy import integrate
 
-        numeric = integrate.quad(
-            lambda u: stats.t.ppf(u, nu), q, 1.0, epsabs=1e-10
-        )[0] / (1 - q)
+        numeric = integrate.quad(lambda u: stats.t.ppf(u, nu), q, 1.0, epsabs=1e-10)[
+            0
+        ] / (1 - q)
         assert closed == pytest.approx(numeric, rel=1e-6)
 
     def test_t_var_exceeds_normal_var(self, fat_tailed_returns: pd.Series) -> None:
