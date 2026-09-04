@@ -1,11 +1,12 @@
 # RiskSense
 
 ![CI](https://github.com/Mohammed-Saif-07/risksense/actions/workflows/ci.yml/badge.svg)
-![Coverage](https://img.shields.io/badge/coverage-70%25%2B-brightgreen)
+![Coverage](https://img.shields.io/badge/coverage-89%25-brightgreen)
+![Tests](https://img.shields.io/badge/tests-100%20passing-brightgreen)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 ![Python](https://img.shields.io/badge/python-3.10%2B-blue)
 
-A market risk engine for an S&P 500 equity portfolio that estimates **Value-at-Risk and Expected Shortfall the way regulators expect it done**: ES at 97.5% per **FRTB** (BCBS 2019), 99% one-day VaR backtested under the **Basel III** traffic-light framework, stress testing in the spirit of **CCAR**, and a model validation report structured after the Federal Reserve's **SR 11-7** guidance. Five-plus years of daily prices for ~500 S&P 500 constituents flow through a PySpark ETL into four independent VaR engines, a statistical backtesting suite (Kupiec, Christoffersen, Dynamic Quantile), and a Streamlit risk dashboard — all running end-to-end on free infrastructure.
+A market risk engine for an S&P 500 equity portfolio that estimates **Value-at-Risk and Expected Shortfall the way regulators expect it done**: ES at 97.5% per **FRTB** (BCBS 2019), 99% one-day VaR backtested under the **Basel III** traffic-light framework, stress testing in the spirit of **CCAR**, and model validation structured after the Federal Reserve's **SR 11-7** guidance. Twenty years of daily prices for 503 S&P 500 constituents (2.4M rows) flow through a PySpark ETL into six VaR/ES engines, a four-test statistical backtesting suite, a stress-testing module, and a Streamlit risk dashboard — all running end-to-end on free infrastructure.
 
 > Personal learning project by a Master's student, not production software. The limitations section at the bottom is honest on purpose.
 
@@ -40,9 +41,6 @@ flowchart LR
     N --> NB[FinBERT NRS<br/>Granger → breaches]
     B & ST & NB --> D[Streamlit dashboard]
 ```
-
-<!-- TODO(week 3): replace with animated dashboard GIF -->
-![Dashboard](docs/assets/dashboard.gif)
 
 ## Methodologies
 
@@ -94,13 +92,28 @@ Five pages, one visual system. The categorical palette is assigned in fixed orde
 
 Mapped to what a quantitative market risk seat actually involves:
 
-- **VaR / ES modeling** — four independent engines with a uniform output schema, ES at the FRTB 97.5% level, fat-tail handling via Student-t and GARCH.
-- **Statistical validation** — Kupiec, Christoffersen and Engle-Manganelli tests with proper LR/Wald statistics, not just exception counting.
-- **Regulatory awareness** — Basel traffic-light zones with the actual BCBS capital multiplier add-ons; SR 11-7 structured validation report; explicit framework tags on every module.
-- **Stress testing** — historical replay, hypothetical curve/equity/credit scenarios, reverse stress search.
-- **Big-data engineering** — PySpark ETL over ~2.5M price rows, parquet + DuckDB warehouse.
-- **ML for risk** — FinBERT narrative scoring with statistical (Granger) validation instead of vibes.
-- **Software craft** — typed, tested (>70% coverage), CI on every push, zero magic numbers.
+- **VaR / ES modeling** — six engines on a uniform output schema so they are directly comparable: historical simulation, parametric normal and Student-t on a Ledoit-Wolf shrunk 500-asset covariance, and Monte Carlo under multivariate normal, multivariate t, and GARCH(1,1)-t.
+- **Statistical validation** — Kupiec, Christoffersen, Engle-Manganelli and Acerbi-Székely with proper LR/Wald statistics, not exception counting.
+- **Regulatory awareness** — Basel traffic-light zones with the actual BCBS capital multiplier add-ons; explicit framework tags on every module.
+- **Stress testing** — crisis replay, eight hypothetical curve/equity/credit scenarios with attribution waterfalls, and a gradient-based reverse stress search.
+- **Big-data engineering** — PySpark ETL over 2.4M price rows with documented data-quality filters.
+- **Software craft** — type hints throughout, 100 tests at 89% coverage, CI on every push, every parameter in YAML.
+- **Honest modelling** — the benchmarking result below is a *negative* result reported in full, and the double-count bug found in stress testing is documented rather than quietly fixed.
+
+## A result worth reading
+
+Backtested over 2006-2026 against ~49.5 expected exceptions at 99% VaR:
+
+| Engine | Exceptions | ES Z₂ |
+|---|---|---|
+| Monte Carlo Normal | 157 | 1.506 |
+| Parametric Normal | 156 | 1.497 |
+| Monte Carlo Student-t | 130 | 1.206 |
+| Parametric Student-t | 129 | 1.209 |
+| Historical Simulation | 77 | 0.478 |
+| Monte Carlo GARCH(1,1)-t | 66 | 0.465 |
+
+The ordering is the textbook one and two independent test families agree on it: constant-volatility normal models understate tail risk worst, fat tails help, and conditional volatility helps most. Every engine still fails the Dynamic Quantile test over the full sample — no single-regime model kept exceptions unpredictable across both 2008 and 2020. That is reported, not tuned away.
 
 ## Roadmap (shipping weekly)
 
@@ -117,9 +130,11 @@ Mapped to what a quantitative market risk seat actually involves:
 - **Survivorship bias.** The universe is *today's* S&P 500 constituents; firms that failed or were delisted are underrepresented, which flatters historical risk estimates.
 - **Free data caveats.** Yahoo adjusted closes can be restated; Stooq fallback rows are split- but not dividend-adjusted (tagged in the data for the DQ report).
 - **One-day horizon only.** No sqrt-of-time scaling to 10-day VaR precisely because it understates fat-tailed risk.
+- **Stress betas come from a calm three-year window.** FRED's ICE BofA credit-spread series are license-capped to ~3 trailing years, so the factor regression spans 2023-2026 (R² ≈ 0.23) — a period containing no equity crisis, which is exactly when the betas would matter most.
+- **Marginal betas cannot be stacked.** A scenario that names an equity shock has its macro legs suppressed, so those scenarios are effectively equity-only. The alternative double-counts: pricing "equity −35% + IG +300bp" without the guard produced a nonsensical 98% loss.
 - **NRS is correlational.** Granger causality is predictive precedence, not economic causation.
 
-See [docs/limitations.md](docs/limitations.md) for the full discussion.
+See [docs/limitations.md](docs/limitations.md) for all 22 documented limitations.
 
 ## License
 
