@@ -59,6 +59,12 @@ flowchart LR
 | `narrative/` | FinBERT on 10-K Item 1A → Narrative Risk Score; Granger vs breaches | Granger (1969) | SR 11-7 ongoing monitoring |
 | `validation/` | Eight-section model validation report | Fed SR 11-7 / OCC 2011-12 | SR 11-7 |
 
+## Live demo
+
+**[View the dashboard →](https://YOUR_APP.streamlit.app)** *(Streamlit Community Cloud, free tier)*
+
+The four artifacts the dashboard reads (~1 MB of parquet and JSON) are committed, so the deployed app renders from a clean clone without needing Spark or a data pull. The raw price history (28 MB) and per-ticker return matrix (35 MB) stay out of git — regenerate them locally with `setup.sh`.
+
 ## Quickstart
 
 ```bash
@@ -69,6 +75,20 @@ streamlit run dashboards/streamlit_app.py
 ```
 
 Requirements: Python 3.10+, Java 11+ (local PySpark), internet for the initial data pull. **No cloud accounts, no API keys, no paid anything.** The same PySpark code runs unmodified on Databricks Community Edition if you want cluster experience.
+
+Dependencies are split so the hosted dashboard builds fast: `requirements.txt` covers the engines, ingestion and dashboard; `requirements-spark.txt` adds PySpark (a ~320 MB wheel needing a JVM) for the ETL only. `setup.sh` and CI install both.
+
+## Dashboard
+
+Five pages, one visual system. The categorical palette is assigned in fixed order and **validated as a set** — lightness band, chroma floor, colour-vision-deficiency separation (worst adjacent ΔE 8.4), normal-vision separation (ΔE 19.3) and ≥3:1 contrast all pass against the dashboard surface — so an engine keeps its colour no matter how many are on screen, and status colours (Basel zones, test verdicts) are a reserved set never reused for a data series, always paired with a text label.
+
+| Page | What it shows |
+|---|---|
+| Portfolio Overview | Headline VaR/ES, Basel zone, cumulative P&L over 5,198 trading days |
+| VaR & Backtesting | Per-engine forecast vs realised P&L, exception markers, all four statistical tests, Basel traffic light |
+| Engine Comparison | Six engines head-to-head — exception ranking, VaR paths, full scoreboard table |
+| Stress Testing | 2008/COVID/SVB replay, eight hypothetical scenarios with attribution waterfalls, reverse stress search |
+| Narrative Risk | Week 4 — FinBERT overlay (in progress) |
 
 ## What this demonstrates
 

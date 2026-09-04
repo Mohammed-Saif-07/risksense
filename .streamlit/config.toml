@@ -1,0 +1,16 @@
+# Deliberate single (dark) look — the palette in dashboards/theme.py is
+# validated against this surface, so the theme is pinned rather than
+# following the viewer's OS setting.
+[theme]
+base = "dark"
+primaryColor = "#3987e5"
+backgroundColor = "#0b0e14"
+secondaryBackgroundColor = "#12151c"
+textColor = "#f2f4f8"
+font = "sans serif"
+
+[server]
+headless = true
+
+[browser]
+gatherUsageStats = false

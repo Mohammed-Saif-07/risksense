@@ -1,0 +1,380 @@
+{
+  "historical": {
+    "n_forecast_days": 4948,
+    "first_date": "2007-01-03",
+    "kupiec": {
+      "n_obs": 4948,
+      "n_exceptions": 77,
+      "expected_exceptions": 49.48000000000005,
+      "coverage": 0.99,
+      "exception_rate": 0.015561843168957154,
+      "lr_stat": 13.219376997285053,
+      "p_value": 0.00027706969912157044,
+      "reject_h0": true,
+      "alpha": 0.05
+    },
+    "christoffersen": {
+      "n_obs": 4948,
+      "n_exceptions": 77,
+      "coverage": 0.99,
+      "n00": 4800,
+      "n01": 70,
+      "n10": 70,
+      "n11": 7,
+      "pi01": 0.014373716632443531,
+      "pi11": 0.09090909090909091,
+      "lr_uc": 13.219376997285053,
+      "p_uc": 0.00027706969912157044,
+      "lr_ind": 14.023332445179221,
+      "p_ind": 0.0001805562192613421,
+      "lr_cc": 27.242709442464275,
+      "p_cc": 1.2142854984964508e-06,
+      "reject_independence": true,
+      "reject_conditional_coverage": true,
+      "alpha": 0.05
+    },
+    "dynamic_quantile": {
+      "n_obs": 4944,
+      "n_exceptions": 77,
+      "coverage": 0.99,
+      "lags": 4,
+      "dq_stat": 315.72386620589117,
+      "p_value": 3.4870682630955157e-65,
+      "reject_h0": true,
+      "alpha": 0.05
+    },
+    "es_acerbi_szekely_z2": {
+      "n_obs": 4948,
+      "n_exceptions": 164,
+      "es_level": 0.975,
+      "z2_stat": 0.47818832775701337,
+      "bootstrap_se": 0.12223885529552392,
+      "p_value": 4.578308071504867e-05,
+      "reject_h0": true,
+      "alpha": 0.05,
+      "n_bootstrap": 5000
+    },
+    "basel_traffic_light_last_250d": {
+      "n_obs": 250,
+      "n_exceptions": 1,
+      "zone": "green",
+      "multiplier_addon": 0.0,
+      "cumulative_probability": 0.2857517387939523
+    }
+  },
+  "parametric_normal": {
+    "n_forecast_days": 4948,
+    "first_date": "2007-01-03",
+    "kupiec": {
+      "n_obs": 4948,
+      "n_exceptions": 156,
+      "expected_exceptions": 49.48000000000005,
+      "coverage": 0.99,
+      "exception_rate": 0.03152789005658852,
+      "lr_stat": 147.55897606961435,
+      "p_value": 5.922946297453265e-34,
+      "reject_h0": true,
+      "alpha": 0.05
+    },
+    "christoffersen": {
+      "n_obs": 4948,
+      "n_exceptions": 156,
+      "coverage": 0.99,
+      "n00": 4656,
+      "n01": 135,
+      "n10": 135,
+      "n11": 21,
+      "pi01": 0.028177833437695678,
+      "pi11": 0.1346153846153846,
+      "lr_uc": 147.55897606961435,
+      "p_uc": 5.922946297453265e-34,
+      "lr_ind": 32.40246267400221,
+      "p_ind": 1.253275477604229e-08,
+      "lr_cc": 179.96143874361655,
+      "p_cc": 8.353531202367646e-40,
+      "reject_independence": true,
+      "reject_conditional_coverage": true,
+      "alpha": 0.05
+    },
+    "dynamic_quantile": {
+      "n_obs": 4944,
+      "n_exceptions": 156,
+      "coverage": 0.99,
+      "lags": 4,
+      "dq_stat": 895.427667219386,
+      "p_value": 3.6581682027707623e-190,
+      "reject_h0": true,
+      "alpha": 0.05
+    },
+    "es_acerbi_szekely_z2": {
+      "n_obs": 4948,
+      "n_exceptions": 227,
+      "es_level": 0.975,
+      "z2_stat": 1.4970593093439208,
+      "bootstrap_se": 0.18300703133457122,
+      "p_value": 1.4152480084455792e-16,
+      "reject_h0": true,
+      "alpha": 0.05,
+      "n_bootstrap": 5000
+    },
+    "basel_traffic_light_last_250d": {
+      "n_obs": 250,
+      "n_exceptions": 1,
+      "zone": "green",
+      "multiplier_addon": 0.0,
+      "cumulative_probability": 0.2857517387939523
+    }
+  },
+  "parametric_t": {
+    "n_forecast_days": 4948,
+    "first_date": "2007-01-03",
+    "kupiec": {
+      "n_obs": 4948,
+      "n_exceptions": 129,
+      "expected_exceptions": 49.48000000000005,
+      "coverage": 0.99,
+      "exception_rate": 0.026071139854486662,
+      "lr_stat": 89.48484340731557,
+      "p_value": 3.0899670626362536e-21,
+      "reject_h0": true,
+      "alpha": 0.05
+    },
+    "christoffersen": {
+      "n_obs": 4948,
+      "n_exceptions": 129,
+      "coverage": 0.99,
+      "n00": 4706,
+      "n01": 112,
+      "n10": 112,
+      "n11": 17,
+      "pi01": 0.023246160232461604,
+      "pi11": 0.13178294573643412,
+      "lr_uc": 89.48484340731557,
+      "p_uc": 3.0899670626362536e-21,
+      "lr_ind": 30.9249148615138,
+      "p_ind": 2.682064051444417e-08,
+      "lr_cc": 120.40975826882936,
+      "p_cc": 7.134330236849499e-27,
+      "reject_independence": true,
+      "reject_conditional_coverage": true,
+      "alpha": 0.05
+    },
+    "dynamic_quantile": {
+      "n_obs": 4944,
+      "n_exceptions": 129,
+      "coverage": 0.99,
+      "lags": 4,
+      "dq_stat": 685.5332331544952,
+      "p_value": 8.125515417287573e-145,
+      "reject_h0": true,
+      "alpha": 0.05
+    },
+    "es_acerbi_szekely_z2": {
+      "n_obs": 4948,
+      "n_exceptions": 222,
+      "es_level": 0.975,
+      "z2_stat": 1.20939470555661,
+      "bootstrap_se": 0.1622822569909114,
+      "p_value": 4.5823496262818094e-14,
+      "reject_h0": true,
+      "alpha": 0.05,
+      "n_bootstrap": 5000
+    },
+    "basel_traffic_light_last_250d": {
+      "n_obs": 250,
+      "n_exceptions": 1,
+      "zone": "green",
+      "multiplier_addon": 0.0,
+      "cumulative_probability": 0.2857517387939523
+    }
+  },
+  "monte_carlo_normal": {
+    "n_forecast_days": 4948,
+    "first_date": "2007-01-03",
+    "kupiec": {
+      "n_obs": 4948,
+      "n_exceptions": 157,
+      "expected_exceptions": 49.48000000000005,
+      "coverage": 0.99,
+      "exception_rate": 0.031729991915925626,
+      "lr_stat": 149.9061268034584,
+      "p_value": 1.8175159049794828e-34,
+      "reject_h0": true,
+      "alpha": 0.05
+    },
+    "christoffersen": {
+      "n_obs": 4948,
+      "n_exceptions": 157,
+      "coverage": 0.99,
+      "n00": 4654,
+      "n01": 136,
+      "n10": 136,
+      "n11": 21,
+      "pi01": 0.028392484342379957,
+      "pi11": 0.1337579617834395,
+      "lr_uc": 149.9061268034584,
+      "p_uc": 1.8175159049794828e-34,
+      "lr_ind": 31.940894463658424,
+      "p_ind": 1.5893564175471805e-08,
+      "lr_cc": 181.84702126711682,
+      "p_cc": 3.2540262839871254e-40,
+      "reject_independence": true,
+      "reject_conditional_coverage": true,
+      "alpha": 0.05
+    },
+    "dynamic_quantile": {
+      "n_obs": 4944,
+      "n_exceptions": 157,
+      "coverage": 0.99,
+      "lags": 4,
+      "dq_stat": 890.1039266790168,
+      "p_value": 5.177632947009004e-189,
+      "reject_h0": true,
+      "alpha": 0.05
+    },
+    "es_acerbi_szekely_z2": {
+      "n_obs": 4948,
+      "n_exceptions": 228,
+      "es_level": 0.975,
+      "z2_stat": 1.5059883336833328,
+      "bootstrap_se": 0.18384526124895034,
+      "p_value": 1.2887936567911093e-16,
+      "reject_h0": true,
+      "alpha": 0.05,
+      "n_bootstrap": 5000
+    },
+    "basel_traffic_light_last_250d": {
+      "n_obs": 250,
+      "n_exceptions": 1,
+      "zone": "green",
+      "multiplier_addon": 0.0,
+      "cumulative_probability": 0.2857517387939523
+    }
+  },
+  "monte_carlo_t": {
+    "n_forecast_days": 4948,
+    "first_date": "2007-01-03",
+    "kupiec": {
+      "n_obs": 4948,
+      "n_exceptions": 130,
+      "expected_exceptions": 49.48000000000005,
+      "coverage": 0.99,
+      "exception_rate": 0.026273241713823767,
+      "lr_stat": 91.44200399373108,
+      "p_value": 1.1491117410756173e-21,
+      "reject_h0": true,
+      "alpha": 0.05
+    },
+    "christoffersen": {
+      "n_obs": 4948,
+      "n_exceptions": 130,
+      "coverage": 0.99,
+      "n00": 4703,
+      "n01": 114,
+      "n10": 114,
+      "n11": 16,
+      "pi01": 0.023666182271123104,
+      "pi11": 0.12307692307692308,
+      "lr_uc": 91.44200399373108,
+      "p_uc": 1.1491117410756173e-21,
+      "lr_ind": 26.865177853636624,
+      "p_ind": 2.1815431789212466e-07,
+      "lr_cc": 118.3071818473677,
+      "p_cc": 2.0413707003514304e-26,
+      "reject_independence": true,
+      "reject_conditional_coverage": true,
+      "alpha": 0.05
+    },
+    "dynamic_quantile": {
+      "n_obs": 4944,
+      "n_exceptions": 130,
+      "coverage": 0.99,
+      "lags": 4,
+      "dq_stat": 621.7355318445857,
+      "p_value": 4.772655709414807e-131,
+      "reject_h0": true,
+      "alpha": 0.05
+    },
+    "es_acerbi_szekely_z2": {
+      "n_obs": 4948,
+      "n_exceptions": 221,
+      "es_level": 0.975,
+      "z2_stat": 1.206441528614811,
+      "bootstrap_se": 0.16276800314194187,
+      "p_value": 6.21897108861898e-14,
+      "reject_h0": true,
+      "alpha": 0.05,
+      "n_bootstrap": 5000
+    },
+    "basel_traffic_light_last_250d": {
+      "n_obs": 250,
+      "n_exceptions": 1,
+      "zone": "green",
+      "multiplier_addon": 0.0,
+      "cumulative_probability": 0.2857517387939523
+    }
+  },
+  "monte_carlo_garch_t": {
+    "n_forecast_days": 4448,
+    "first_date": "2008-12-26",
+    "kupiec": {
+      "n_obs": 4448,
+      "n_exceptions": 66,
+      "expected_exceptions": 44.48000000000004,
+      "coverage": 0.99,
+      "exception_rate": 0.014838129496402877,
+      "lr_stat": 9.154532123031345,
+      "p_value": 0.0024810280693977754,
+      "reject_h0": true,
+      "alpha": 0.05
+    },
+    "christoffersen": {
+      "n_obs": 4448,
+      "n_exceptions": 66,
+      "coverage": 0.99,
+      "n00": 4319,
+      "n01": 62,
+      "n10": 62,
+      "n11": 4,
+      "pi01": 0.014152020086738187,
+      "pi11": 0.06060606060606061,
+      "lr_uc": 9.154532123031345,
+      "p_uc": 0.0024810280693977754,
+      "lr_ind": 5.502020471079732,
+      "p_ind": 0.01899451468489017,
+      "lr_cc": 14.656552594111076,
+      "p_cc": 0.000656704575712286,
+      "reject_independence": true,
+      "reject_conditional_coverage": true,
+      "alpha": 0.05
+    },
+    "dynamic_quantile": {
+      "n_obs": 4444,
+      "n_exceptions": 66,
+      "coverage": 0.99,
+      "lags": 4,
+      "dq_stat": 62.07634794013569,
+      "p_value": 1.702239762929746e-11,
+      "reject_h0": true,
+      "alpha": 0.05
+    },
+    "es_acerbi_szekely_z2": {
+      "n_obs": 4448,
+      "n_exceptions": 158,
+      "es_level": 0.975,
+      "z2_stat": 0.4654957743607062,
+      "bootstrap_se": 0.11848962497497183,
+      "p_value": 4.272475738614441e-05,
+      "reject_h0": true,
+      "alpha": 0.05,
+      "n_bootstrap": 5000
+    },
+    "basel_traffic_light_last_250d": {
+      "n_obs": 250,
+      "n_exceptions": 1,
+      "zone": "green",
+      "multiplier_addon": 0.0,
+      "cumulative_probability": 0.2857517387939523
+    }
+  }
+}

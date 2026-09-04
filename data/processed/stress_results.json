@@ -1,0 +1,210 @@
+{
+  "sensitivities": {
+    "betas": {
+      "rates_level_bp": -0.0005260757340601063,
+      "rates_slope_bp": -0.000287953461894129,
+      "credit_ig_bp": -0.0029701012156665286
+    },
+    "stderrs": {
+      "rates_level_bp": 0.00010609918364921566,
+      "rates_slope_bp": 0.00015781773208521933,
+      "credit_ig_bp": 0.0006097586321034828
+    },
+    "alpha": 0.00020984454159493317,
+    "r_squared": 0.22753606516386093,
+    "n_obs": 578,
+    "sample_start": "2023-09-06",
+    "sample_end": "2026-09-02",
+    "notes": [
+      "Betas from the joint sample where all factors exist; the ICE BofA OAS series cap this to ~3 trailing years on FRED.",
+      "Equity shocks bypass this regression: unit pass-through by construction for the all-equity portfolio.",
+      "HY OAS excluded: collinear with IG (flips the IG beta's sign).",
+      "Marginal betas \u2014 never stacked on an explicit equity shock (double-count guard in the hypothetical module)."
+    ]
+  },
+  "hypothetical": [
+    {
+      "name": "parallel_up_100",
+      "label": "Parallel +100bp",
+      "total_loss_frac": 0.05260757340601063,
+      "total_loss_usd": 52607.57340601063,
+      "contributions": {
+        "equity": -0.0,
+        "rates_level": 0.05260757340601063,
+        "rates_slope": 0.0,
+        "credit_ig": 0.0
+      },
+      "suppressed": []
+    },
+    {
+      "name": "parallel_dn_100",
+      "label": "Parallel -100bp",
+      "total_loss_frac": -0.05260757340601063,
+      "total_loss_usd": -52607.57340601063,
+      "contributions": {
+        "equity": -0.0,
+        "rates_level": -0.05260757340601063,
+        "rates_slope": 0.0,
+        "credit_ig": 0.0
+      },
+      "suppressed": []
+    },
+    {
+      "name": "parallel_up_200",
+      "label": "Parallel +200bp",
+      "total_loss_frac": 0.10521514681202127,
+      "total_loss_usd": 105215.14681202127,
+      "contributions": {
+        "equity": -0.0,
+        "rates_level": 0.10521514681202127,
+        "rates_slope": 0.0,
+        "credit_ig": 0.0
+      },
+      "suppressed": []
+    },
+    {
+      "name": "parallel_dn_200",
+      "label": "Parallel -200bp",
+      "total_loss_frac": -0.10521514681202127,
+      "total_loss_usd": -105215.14681202127,
+      "contributions": {
+        "equity": -0.0,
+        "rates_level": -0.10521514681202127,
+        "rates_slope": 0.0,
+        "credit_ig": 0.0
+      },
+      "suppressed": []
+    },
+    {
+      "name": "steepener",
+      "label": "Bear steepener",
+      "total_loss_frac": 0.04914607608826878,
+      "total_loss_usd": 49146.076088268775,
+      "contributions": {
+        "equity": -0.0,
+        "rates_level": 0.013151893351502658,
+        "rates_slope": 0.03599418273676612,
+        "credit_ig": 0.0
+      },
+      "suppressed": []
+    },
+    {
+      "name": "flattener",
+      "label": "Bull flattener",
+      "total_loss_frac": -0.033179310639913785,
+      "total_loss_usd": -33179.31063991378,
+      "contributions": {
+        "equity": -0.0,
+        "rates_level": -0.004383964450500886,
+        "rates_slope": -0.028795346189412898,
+        "credit_ig": 0.0
+      },
+      "suppressed": []
+    },
+    {
+      "name": "equity_credit_1",
+      "label": "Equity -20% + IG OAS +150bp",
+      "total_loss_frac": 0.2,
+      "total_loss_usd": 200000.0,
+      "contributions": {
+        "equity": 0.2,
+        "rates_level": 0.0,
+        "rates_slope": 0.0,
+        "credit_ig": 0.0
+      },
+      "suppressed": [
+        "credit_ig"
+      ]
+    },
+    {
+      "name": "equity_credit_2",
+      "label": "Equity -35% + IG OAS +300bp",
+      "total_loss_frac": 0.35,
+      "total_loss_usd": 350000.0,
+      "contributions": {
+        "equity": 0.35,
+        "rates_level": 0.0,
+        "rates_slope": 0.0,
+        "credit_ig": 0.0
+      },
+      "suppressed": [
+        "credit_ig"
+      ]
+    }
+  ],
+  "historical": [
+    {
+      "name": "gfc_2008",
+      "label": "2008 Global Financial Crisis",
+      "start": "2008-09-01",
+      "end": "2009-03-31",
+      "n_days": 146,
+      "cumulative_loss_frac": 0.40577946065706394,
+      "cumulative_loss_usd": 405779.46065706393,
+      "worst_day": "2008-12-01",
+      "worst_day_loss_frac": 0.10737126551921988,
+      "max_drawdown_frac": 0.5140590354062576,
+      "contributions": {
+        "rates_level": -0.014204044819622803,
+        "rates_slope": 0.006622929623565003,
+        "equity_residual": 0.41336057585312175
+      },
+      "factors_missing": [
+        "credit_ig_bp"
+      ]
+    },
+    {
+      "name": "covid_2020",
+      "label": "COVID-19 crash",
+      "start": "2020-02-19",
+      "end": "2020-04-07",
+      "n_days": 35,
+      "cumulative_loss_frac": 0.26506815182272103,
+      "cumulative_loss_usd": 265068.151822721,
+      "worst_day": "2020-03-16",
+      "worst_day_loss_frac": 0.13874796282762414,
+      "max_drawdown_frac": 0.39714297891817996,
+      "contributions": {
+        "rates_level": -0.014905479131703031,
+        "rates_slope": 0.021308556180165538,
+        "equity_residual": 0.25866507477425854
+      },
+      "factors_missing": [
+        "credit_ig_bp"
+      ]
+    },
+    {
+      "name": "svb_2023",
+      "label": "SVB / regional banking stress",
+      "start": "2023-03-08",
+      "end": "2023-03-24",
+      "n_days": 13,
+      "cumulative_loss_frac": 0.04105848459593951,
+      "cumulative_loss_usd": 41058.48459593951,
+      "worst_day": "2023-03-22",
+      "worst_day_loss_frac": 0.02181387481235123,
+      "max_drawdown_frac": 0.05153902491635087,
+      "contributions": {
+        "rates_level": -0.027882013905185694,
+        "rates_slope": 0.014109719632812353,
+        "equity_residual": 0.054830778868312856
+      },
+      "factors_missing": [
+        "credit_ig_bp"
+      ]
+    }
+  ],
+  "reverse": {
+    "target_loss_frac": 0.15,
+    "achieved_loss_frac": 0.14999999999373348,
+    "shocks": {
+      "equity": -0.014854048704008641,
+      "rates_level_bp": 7.814354577437254,
+      "credit_ig_bp": 44.11802812578144
+    },
+    "scaled_magnitude": 4.720283154716693,
+    "converged": true,
+    "n_iterations": 1,
+    "binding_bounds": []
+  }
+}

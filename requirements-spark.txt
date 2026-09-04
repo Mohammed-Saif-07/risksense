@@ -1,0 +1,7 @@
+# Spark ETL only (risksense/pipelines/*). Split out of requirements.txt
+# because it is a ~320MB wheel needing a JVM, and the deployed Streamlit
+# dashboard reads pre-computed parquet — it never starts a Spark session.
+#
+# Installed automatically by setup.sh and by CI. Needs Java 11+ on PATH.
+# The same code runs unmodified on Databricks Community Edition.
+pyspark>=3.5

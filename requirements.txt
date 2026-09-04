@@ -1,12 +1,22 @@
-# Core scientific stack
+# Core runtime: dashboard, risk engines, ingestion, tests.
+#
+# PySpark is NOT here — it is a ~320MB wheel that also needs a JVM, and the
+# Spark ETL is the only thing that uses it. It lives in
+# requirements-spark.txt, which setup.sh and CI install as well, so a local
+# clone still gets the full pipeline. Keeping it out lets Streamlit
+# Community Cloud build the deployed dashboard in a fraction of the time.
+
+# Scientific stack
 numpy>=1.26
 pandas>=2.1
 scipy>=1.11
 pyarrow>=14.0
 PyYAML>=6.0
 
-# Spark ETL (runs locally via local[*]; same code on Databricks CE)
-pyspark>=3.5
+# Risk engines: Ledoit-Wolf shrinkage, GARCH, OLS sensitivities
+scikit-learn>=1.3
+arch>=6.2
+statsmodels>=0.14
 
 # Data ingestion (all free, keyless endpoints)
 yfinance>=0.2.40
@@ -15,11 +25,6 @@ lxml>=4.9            # pandas.read_html for the S&P 500 universe scrape
 
 # Local warehouse
 duckdb>=0.10
-
-# Week 2+: parametric VaR (Ledoit-Wolf), GARCH
-scikit-learn>=1.3
-arch>=6.2
-statsmodels>=0.14
 
 # Dashboard
 streamlit>=1.31

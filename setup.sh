@@ -11,9 +11,9 @@ python3 -m venv .venv
 # shellcheck disable=SC1091
 source .venv/bin/activate
 
-echo "==> Installing dependencies"
+echo "==> Installing dependencies (incl. PySpark for the ETL)"
 pip install --quiet --upgrade pip
-pip install --quiet -r requirements.txt
+pip install --quiet -r requirements.txt -r requirements-spark.txt
 pip install --quiet -e .
 
 echo "==> Ingesting S&P 500 daily prices (yfinance, Stooq fallback)"
