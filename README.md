@@ -1,5 +1,6 @@
 # RiskSense
 
+[![Live dashboard](https://img.shields.io/badge/live%20dashboard-risk--sense.streamlit.app-FF4B4B?logo=streamlit&logoColor=white)](https://risk-sense.streamlit.app)
 ![CI](https://github.com/Mohammed-Saif-07/risksense/actions/workflows/ci.yml/badge.svg)
 ![Coverage](https://img.shields.io/badge/coverage-89%25-brightgreen)
 ![Tests](https://img.shields.io/badge/tests-100%20passing-brightgreen)
@@ -59,7 +60,7 @@ flowchart LR
 
 ## Live demo
 
-**[View the dashboard →](https://YOUR_APP.streamlit.app)** *(Streamlit Community Cloud, free tier)*
+**[View the dashboard → risk-sense.streamlit.app](https://risk-sense.streamlit.app)** *(Streamlit Community Cloud, free tier)*
 
 The four artifacts the dashboard reads (~1 MB of parquet and JSON) are committed, so the deployed app renders from a clean clone without needing Spark or a data pull. The raw price history (28 MB) and per-ticker return matrix (35 MB) stay out of git — regenerate them locally with `setup.sh`.
 
