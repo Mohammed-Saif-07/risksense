@@ -1,0 +1,9 @@
+# Portfolio definition.
+# Default: equal-weight across the ingested S&P 500 universe, rebalanced
+# daily (portfolio return = mean of constituent log returns each day).
+# To use fixed weights instead, provide a `weights:` mapping of
+# ticker -> weight (renormalised daily over tickers that traded).
+
+name: sp500_equal_weight
+notional_usd: 1_000_000
+weights: null   # null => equal-weight, daily-rebalanced

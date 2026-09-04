@@ -1,0 +1,51 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "risksense"
+version = "0.1.0"
+description = "Regulator-aware market risk engine: VaR/ES (FRTB), backtesting (Basel III), stress testing, SR 11-7 validation"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+
+[tool.setuptools.packages.find]
+include = ["risksense*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q --strict-markers"
+
+[tool.coverage.run]
+source = ["risksense"]
+omit = [
+    # Weekly-milestone stubs are excluded until their code lands.
+    "risksense/var/parametric.py",
+    "risksense/var/monte_carlo.py",
+    "risksense/var/expected_shortfall.py",
+    "risksense/backtesting/christoffersen.py",
+    "risksense/backtesting/dq_test.py",
+    "risksense/stress/*",
+    "risksense/narrative/*",
+    "risksense/validation/*",
+]
+
+[tool.black]
+line-length = 88
+target-version = ["py310"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W", "UP", "B", "SIM"]
+ignore = ["E501"]  # long lines in docstring references
+
+[tool.mypy]
+python_version = "3.10"
+warn_unused_ignores = true
+disallow_untyped_defs = true
+ignore_missing_imports = true
+exclude = ["notebooks", "build"]

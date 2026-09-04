@@ -1,0 +1,31 @@
+# VaR / ES model parameters.
+# Every numeric parameter used by the engines lives here — no magic numbers
+# in code. Regulatory anchors noted inline.
+
+var:
+  var_level: 0.99          # Basel III backtesting anchor (99% one-day VaR)
+  es_level: 0.975          # FRTB expected shortfall standard (BCBS 2019)
+  window_days: 250         # Basel III minimum estimation window (1 trading year)
+  horizon_days: 1
+
+monte_carlo:               # Week 2
+  n_paths: 10000
+  seed: 42
+  student_t_min_dof: 2.5   # below ~2.5 the variance is unstable to estimate
+  garch:                   # GARCH(1,1)-t (Bollerslev 1986)
+    p: 1
+    q: 1
+
+parametric:                # Week 2
+  ledoit_wolf_shrinkage: true   # Ledoit & Wolf (2004), sklearn implementation
+
+backtesting:
+  alpha: 0.05              # significance for Kupiec / Christoffersen / DQ
+  basel_window: 250        # BCBS (1996) traffic-light window
+  dq_lags: 4               # Engle-Manganelli (2004) standard lag count
+
+data_quality:
+  min_history_days: 300    # ticker must exceed the 250d window + buffer
+  max_abs_return: 0.60     # |log return| above this is treated as a data
+                           # error and winsorised with a flag (largest real
+                           # one-day S&P 500 constituent moves are ~ +-40%)

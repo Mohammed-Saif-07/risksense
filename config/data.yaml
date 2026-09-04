@@ -1,0 +1,29 @@
+# Data ingestion parameters.
+
+prices:
+  # Start early enough that the 2008 GFC historical replay (Week 3) has
+  # actual constituent price paths, not just factor proxies.
+  start_date: "2006-01-01"
+  end_date: null            # null => today
+  universe: sp500           # S&P 500 constituents (Wikipedia, cached locally)
+  universe_cache: config/sp500_universe.csv
+  batch_size: 50            # yfinance tickers per request batch
+  max_retries: 3
+  retry_wait_seconds: 5
+  min_coverage: 0.90        # warn if fewer than 90% of tickers ingested
+
+macro:                      # FRED series (keyless fredgraph.csv endpoint)
+  series:
+    DGS2: 2y_treasury_yield
+    DGS10: 10y_treasury_yield
+    DGS30: 30y_treasury_yield
+    T10Y2Y: 2s10s_spread
+    VIXCLS: vix
+    BAMLC0A0CM: ig_credit_oas      # ICE BofA IG corporate OAS
+    BAMLH0A0HYM2: hy_credit_oas    # ICE BofA HY corporate OAS
+    DFF: fed_funds_rate
+
+filings:                    # Week 4 — SEC EDGAR
+  user_agent_env: EDGAR_USER_AGENT   # SEC requires an identifying UA; set env var
+  form_type: 10-K
+  item: 1A

@@ -1,0 +1,29 @@
+# Stress testing scenario definitions (Week 3 consumes these).
+
+historical:
+  gfc_2008:
+    label: "2008 Global Financial Crisis"
+    start: "2008-09-01"
+    end: "2009-03-31"
+  covid_2020:
+    label: "COVID-19 crash"
+    start: "2020-02-19"
+    end: "2020-04-07"
+  svb_2023:
+    label: "SVB / regional banking stress"
+    start: "2023-03-08"
+    end: "2023-03-24"
+
+hypothetical:
+  parallel_up_100:   {label: "Parallel +100bp",  curve_shift_bp: {"2y": 100, "10y": 100, "30y": 100}}
+  parallel_dn_100:   {label: "Parallel -100bp",  curve_shift_bp: {"2y": -100, "10y": -100, "30y": -100}}
+  parallel_up_200:   {label: "Parallel +200bp",  curve_shift_bp: {"2y": 200, "10y": 200, "30y": 200}}
+  parallel_dn_200:   {label: "Parallel -200bp",  curve_shift_bp: {"2y": -200, "10y": -200, "30y": -200}}
+  steepener:         {label: "Bear steepener",   curve_shift_bp: {"2y": -50, "10y": 50, "30y": 75}}
+  flattener:         {label: "Bull flattener",   curve_shift_bp: {"2y": 50, "10y": -25, "30y": -50}}
+  equity_credit_1:   {label: "Equity -20% + IG OAS +150bp", equity_shock: -0.20, ig_oas_bp: 150, hy_oas_bp: 400}
+  equity_credit_2:   {label: "Equity -35% + IG OAS +300bp", equity_shock: -0.35, ig_oas_bp: 300, hy_oas_bp: 800}
+
+reverse:
+  target_loss_fraction: 0.15   # find smallest shock producing a 15% loss
+  factors: ["equity", "10y", "ig_oas"]
