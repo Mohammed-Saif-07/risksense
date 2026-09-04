@@ -1,7 +1,8 @@
 """RiskSense Streamlit dashboard.
 
 Pages: Portfolio Overview, VaR & Backtesting (per method), VaR Method
-Comparison (all engines head-to-head), plus Week 3-4 placeholders.
+Comparison (all engines head-to-head), Stress Testing (historical replay,
+hypothetical waterfalls, reverse stress), plus the Week 4 placeholder.
 
 Run locally:  streamlit run dashboards/streamlit_app.py
 Deploys as-is to Streamlit Community Cloud (free tier).
@@ -39,6 +40,13 @@ METHOD_LABELS = {
     "monte_carlo_t": "Monte Carlo Student-t",
     "monte_carlo_garch_t": "Monte Carlo GARCH(1,1)-t",
 }
+COMPONENT_LABELS = {
+    "equity": "Equity",
+    "equity_residual": "Equity (residual)",
+    "rates_level": "Rates level",
+    "rates_slope": "Rates slope",
+    "credit_ig": "Credit IG",
+}
 
 st.set_page_config(page_title="RiskSense", layout="wide", page_icon="📉")
 
@@ -53,6 +61,16 @@ def load_outputs() -> tuple[pd.DataFrame, pd.DataFrame, dict]:
     portfolio["date"] = pd.to_datetime(portfolio["date"])
     var_results["date"] = pd.to_datetime(var_results["date"])
     return portfolio, var_results, summary
+
+
+@st.cache_data(show_spinner=False)
+def load_stress() -> dict | None:
+    """Load stress results; ``None`` if the stress suite hasn't been run."""
+    path = PROCESSED / "stress_results.json"
+    if not path.exists():
+        return None
+    with path.open() as fh:
+        return json.load(fh)
 
 
 def zone_banner(basel: dict) -> None:
@@ -231,6 +249,173 @@ def page_comparison(var_results: pd.DataFrame, summary: dict) -> None:
     )
 
 
+def page_stress(portfolio: pd.DataFrame, stress: dict) -> None:
+    """Historical replay, hypothetical waterfalls, factor heatmap, reverse stress."""
+    st.title("Stress Testing")
+    sens = stress["sensitivities"]
+    st.caption(
+        "CCAR-style scenarios translated through OLS factor betas "
+        f"(HC1 robust, {sens['n_obs']} joint days, "
+        f"{sens['sample_start']} → {sens['sample_end']}, R²={sens['r_squared']:.3f}). "
+        "Historical replays use the realised portfolio path, not the betas."
+    )
+
+    tab_hist, tab_hypo, tab_rev = st.tabs(
+        ["Historical replay", "Hypothetical scenarios", "Reverse stress"]
+    )
+
+    with tab_hist:
+        hist = stress["historical"]
+        cols = st.columns(len(hist))
+        for col, h in zip(cols, hist, strict=True):
+            col.metric(
+                h["label"].split(" / ")[0],
+                f"{h['cumulative_loss_frac']:.1%}",
+                f"maxDD {h['max_drawdown_frac']:.1%}",
+                delta_color="off",
+            )
+
+        names = {h["label"]: h for h in hist}
+        chosen = st.selectbox("Crisis window", list(names))
+        h = names[chosen]
+        cum = (
+            portfolio.set_index("date")["portfolio_return"].loc[h["start"]:h["end"]]
+        )
+        wealth = (1.0 + cum).cumprod() - 1.0
+        fig = go.Figure(
+            go.Scatter(x=wealth.index, y=wealth.values, mode="lines",
+                       line={"color": "#c62828"}, name="Cumulative return")
+        )
+        fig.update_layout(
+            height=340, yaxis_tickformat=".0%",
+            title=f"{h['label']}: {h['start']} → {h['end']} ({h['n_days']} trading days)",
+        )
+        st.plotly_chart(fig, use_container_width=True)
+        c1, c2, c3 = st.columns(3)
+        c1.metric("Cumulative loss", f"{h['cumulative_loss_frac']:.2%}")
+        c2.metric("Worst day", f"{h['worst_day_loss_frac']:.2%}", h["worst_day"],
+                  delta_color="off")
+        c3.metric("Max drawdown", f"{h['max_drawdown_frac']:.2%}")
+        if h["factors_missing"]:
+            st.warning(
+                "Factors without data over this window (excluded from the "
+                "attribution, not zeroed silently): "
+                + ", ".join(h["factors_missing"])
+            )
+        st.info(
+            "Universe is *today's* S&P 500 membership — survivorship bias makes "
+            "these replays milder than the crises were (limitations.md #1)."
+        )
+
+    with tab_hypo:
+        hypo = stress["hypothetical"]
+        rows = [
+            {
+                "Scenario": s["label"],
+                "Loss": s["total_loss_frac"],
+                "Loss USD": s["total_loss_usd"],
+            }
+            for s in sorted(hypo, key=lambda s: -s["total_loss_frac"])
+        ]
+        df = pd.DataFrame(rows)
+        fig = go.Figure(
+            go.Bar(
+                x=df["Loss"], y=df["Scenario"], orientation="h",
+                marker_color=["#c62828" if v > 0 else "#2e7d32" for v in df["Loss"]],
+            )
+        )
+        fig.update_layout(
+            height=380, xaxis_tickformat=".0%",
+            title="Scenario P&L (positive = loss)",
+            yaxis={"autorange": "reversed"},
+        )
+        st.plotly_chart(fig, use_container_width=True)
+
+        names = {s["label"]: s for s in hypo}
+        chosen = st.selectbox("Waterfall for scenario", list(names))
+        s = names[chosen]
+        contrib = {k: v for k, v in s["contributions"].items() if v != 0.0}
+        if contrib:
+            labels = [COMPONENT_LABELS.get(k, k) for k in contrib] + ["Total"]
+            wf = go.Figure(
+                go.Waterfall(
+                    orientation="v",
+                    measure=["relative"] * len(contrib) + ["total"],
+                    x=labels,
+                    y=list(contrib.values()) + [0],
+                    increasing={"marker": {"color": "#c62828"}},
+                    decreasing={"marker": {"color": "#2e7d32"}},
+                    totals={"marker": {"color": "#1565c0"}},
+                )
+            )
+            wf.update_layout(height=340, yaxis_tickformat=".1%",
+                             title=f"Factor attribution — {s['label']}")
+            st.plotly_chart(wf, use_container_width=True)
+        if s["suppressed"]:
+            st.warning(
+                "Double-count guard: "
+                + ", ".join(COMPONENT_LABELS.get(k, k) for k in s["suppressed"])
+                + " contribute 0 here. The betas are *marginal* — they encode "
+                "the equity move that accompanies a macro shock — so adding "
+                "them on top of an explicit equity shock would count the same "
+                "loss twice."
+            )
+
+        heat = pd.DataFrame(
+            {
+                s["label"]: {
+                    COMPONENT_LABELS.get(k, k): v for k, v in s["contributions"].items()
+                }
+                for s in hypo
+            }
+        )
+        hm = go.Figure(
+            go.Heatmap(
+                z=heat.to_numpy(), x=list(heat.columns), y=list(heat.index),
+                colorscale="RdBu_r", zmid=0, colorbar={"tickformat": ".0%"},
+            )
+        )
+        hm.update_layout(height=300, title="Factor contribution heatmap (loss share)")
+        st.plotly_chart(hm, use_container_width=True)
+
+    with tab_rev:
+        rev = stress["reverse"]
+        st.subheader(
+            f"Smallest shock reaching a {rev['target_loss_frac']:.0%} loss"
+        )
+        st.caption(
+            "BCBS (2018) Principle 6: minimise scaled shock magnitude subject "
+            "to loss ≥ target (SLSQP, bounded to plausible moves)."
+        )
+        cols = st.columns(len(rev["shocks"]))
+        units = {"equity": "", "rates_level_bp": "bp", "credit_ig_bp": "bp"}
+        for col, (factor, value) in zip(cols, rev["shocks"].items(), strict=True):
+            label = COMPONENT_LABELS.get(factor.replace("_bp", ""), factor)
+            shown = f"{value:.2%}" if factor == "equity" else f"{value:+.1f} {units.get(factor, '')}"
+            col.metric(label, shown)
+        st.write(
+            f"Achieved loss **{rev['achieved_loss_frac']:.2%}** · "
+            f"scaled magnitude {rev['scaled_magnitude']:.2f} · "
+            f"{rev['n_iterations']} iterations"
+        )
+        if rev["binding_bounds"]:
+            st.warning("Bounds binding at the optimum: " + ", ".join(rev["binding_bounds"]))
+
+        st.subheader("Estimated factor sensitivities")
+        st.dataframe(
+            pd.DataFrame(
+                {
+                    "Factor": list(sens["betas"]),
+                    "Beta (return per bp)": [f"{v:+.3e}" for v in sens["betas"].values()],
+                    "Std error (HC1)": [f"{v:.1e}" for v in sens["stderrs"].values()],
+                }
+            ),
+            use_container_width=True, hide_index=True,
+        )
+        for note in sens["notes"]:
+            st.caption(f"• {note}")
+
+
 def main() -> None:
     """Sidebar router."""
     page = st.sidebar.radio(
@@ -239,7 +424,7 @@ def main() -> None:
             "Portfolio Overview",
             "VaR & Backtesting",
             "VaR Method Comparison",
-            "Stress Testing (Week 3)",
+            "Stress Testing",
             "Narrative Risk (Week 4)",
         ],
     )
@@ -260,6 +445,16 @@ def main() -> None:
         page_var_backtest(var_results, summary)
     elif page == "VaR Method Comparison":
         page_comparison(var_results, summary)
+    elif page == "Stress Testing":
+        stress = load_stress()
+        if stress is None:
+            st.error(
+                "Stress results not found. Run:\n\n"
+                "```\npython data/ingest_macro.py\n"
+                "python -m risksense.stress\n```"
+            )
+        else:
+            page_stress(portfolio, stress)
     else:
         st.title(page)
         st.info("This page ships in a later weekly milestone — see README roadmap.")

@@ -88,6 +88,64 @@ historical 77, GARCH-t 66. The ordering is the textbook one: constant-vol
 normal understates tails worst; fat tails help; conditional volatility
 helps most.
 
-## 6-7. Stress testing, narrative overlay
+## 6. Stress testing (Week 3)
 
-Ship with Weeks 3-4; sections will be filled as the code lands.
+### 6.1 Factor sensitivities
+
+The portfolio is linear long-only equity, so macro-denominated scenarios
+reach it through OLS betas (HC1 robust standard errors):
+
+    r_p = α + β_lvl ΔLevel_bp + β_slp ΔSlope_bp + β_ig ΔIG_bp + ε
+
+* Curve factors are **Level** (mean of 2y/10y/30y) and **Slope** (30y − 2y)
+  rather than per-tenor changes, which are too collinear for stable betas.
+* **HY OAS is deliberately excluded.** Including both IG and HY flipped the
+  IG beta's sign on the real sample — textbook multicollinearity. It stays
+  out and the exclusion is reported in the model's own `notes`.
+* Realised sample: 578 joint days (2023-09 → 2026-09), R² ≈ 0.23. The
+  window is short because FRED's ICE BofA OAS series are license-capped to
+  ~3 trailing years.
+
+These are **marginal** betas: they answer "given this macro move, what
+equity move comes with it?"
+
+### 6.2 Hypothetical scenarios and the double-count guard
+
+Scenario losses come from the config-defined shocks priced through those
+betas. The subtlety that drove a real bug fix: for a scenario that
+*specifies* an equity shock, the macro betas must be suppressed, because a
+marginal beta already contains the equity move a credit or rates shock
+brings with it. Before the guard, "equity −35% + IG OAS +300bp" priced at a
+**98% loss**; with the guard it prices at **35%**, and the suppressed legs
+are reported explicitly rather than silently dropped.
+
+### 6.3 Historical replay
+
+Crisis windows are replayed using the *realised* portfolio path (equal
+weight, daily rebalanced), so the headline number needs no factor
+approximation. Factor attribution then decomposes the window's realised
+macro moves × betas, with the unexplained remainder labelled
+`equity_residual` so the waterfall sums exactly. Factors whose history does
+not cover the window are named in `factors_missing`, never zeroed silently.
+
+Realised results: **2008 GFC −40.6%** (146 days, worst day −10.7%, max
+drawdown 51.4%), **COVID −26.5%** (35 days, worst day −13.9%), **SVB −4.1%**.
+
+### 6.4 Reverse stress testing
+
+BCBS (2018) Principle 6: find the *smallest* shock reaching a target loss.
+
+    min_x Σ_i (x_i / s_i)²    s.t.  loss(x) ≥ target,  bounds on x
+
+solved with SLSQP. Scales `s_i` make factor magnitudes comparable (1%
+equity ≈ 10bp rates ≈ 10bp IG); bounds encode plausibility (equity can only
+fall, spreads can only widen). For this linear loss the unbounded problem
+has a Lagrange closed form, which the tests use as the known answer;
+the optimiser earns its place when bounds bind. Feasibility is judged by
+the achieved loss, not SLSQP's `success` flag — when the warm start is
+already optimal the solver reports "positive directional derivative" while
+sitting exactly on the constraint.
+
+## 7. Narrative overlay
+
+Ships with Week 4.

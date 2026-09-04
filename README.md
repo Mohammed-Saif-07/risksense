@@ -63,7 +63,7 @@ flowchart LR
 
 ```bash
 git clone https://github.com/YOUR_USERNAME/risksense && cd risksense
-./setup.sh                      # venv + deps + real data + full pipeline (~15 min)
+./setup.sh                      # venv + deps + real data + full pipeline (~20 min)
 source .venv/bin/activate
 streamlit run dashboards/streamlit_app.py
 ```
@@ -86,7 +86,7 @@ Mapped to what a quantitative market risk seat actually involves:
 
 - [x] **Week 1** — ingestion (S&P 500 + FRED), PySpark ETL, Historical VaR/ES, Kupiec + Basel traffic light, dashboard v0, CI
 - [x] **Week 2** — parametric (Ledoit-Wolf) + Monte Carlo (normal/t/GARCH-t) engines, Christoffersen + DQ + Acerbi-Székely tests, engine comparison page
-- [ ] **Week 3** — stress testing module, full dashboard
+- [x] **Week 3** — stress testing (historical replay, 8 hypothetical scenarios, reverse stress), factor attribution waterfalls, stress dashboard page
 - [ ] **Week 4** — FinBERT narrative overlay, SR 11-7 validation report, polish
 
 ## Limitations (read this)

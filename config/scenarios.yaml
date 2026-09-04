@@ -21,9 +21,20 @@ hypothetical:
   parallel_dn_200:   {label: "Parallel -200bp",  curve_shift_bp: {"2y": -200, "10y": -200, "30y": -200}}
   steepener:         {label: "Bear steepener",   curve_shift_bp: {"2y": -50, "10y": 50, "30y": 75}}
   flattener:         {label: "Bull flattener",   curve_shift_bp: {"2y": 50, "10y": -25, "30y": -50}}
-  equity_credit_1:   {label: "Equity -20% + IG OAS +150bp", equity_shock: -0.20, ig_oas_bp: 150, hy_oas_bp: 400}
-  equity_credit_2:   {label: "Equity -35% + IG OAS +300bp", equity_shock: -0.35, ig_oas_bp: 300, hy_oas_bp: 800}
+  # In equity-specified scenarios the credit legs are CONTEXT for this
+  # all-equity book: the double-count guard zeroes their beta contribution
+  # (marginal betas already embed the equity move a credit shock brings).
+  equity_credit_1:   {label: "Equity -20% + IG OAS +150bp", equity_shock: -0.20, ig_oas_bp: 150}
+  equity_credit_2:   {label: "Equity -35% + IG OAS +300bp", equity_shock: -0.35, ig_oas_bp: 300}
 
 reverse:
   target_loss_fraction: 0.15   # find smallest shock producing a 15% loss
-  factors: ["equity", "10y", "ig_oas"]
+  factors: ["equity", "rates_level_bp", "credit_ig_bp"]
+  scales:                      # "equally painful" units for the objective:
+    equity: 0.01               #   1% equity move ~
+    rates_level_bp: 10.0       #   10bp parallel shift ~
+    credit_ig_bp: 10.0         #   10bp IG OAS widening
+  bounds:                      # plausibility box for the search
+    equity: [-0.60, 0.0]       # equity can only fall, at most -60%
+    rates_level_bp: [-300.0, 300.0]
+    credit_ig_bp: [0.0, 500.0] # spreads only widen in a stress scenario

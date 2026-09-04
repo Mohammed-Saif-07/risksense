@@ -70,7 +70,35 @@ without documented limitations is a model risk. Expanded as modules ship.
     clustering; the original prescribes simulating under the model's own
     dynamics.
 
-## Coming with Weeks 3-4
+## Stress testing (Week 3)
+
+16. **The factor sample is three years long.** FRED's ICE BofA OAS series
+    are license-capped to ~3 trailing years, so the betas are estimated on
+    578 days (2023-09 → 2026-09) — a period with no equity crisis in it.
+    Betas estimated in calm regimes understate crisis behaviour, which is
+    exactly when stress testing matters.
+17. **R² ≈ 0.23.** Daily macro moves explain roughly a quarter of daily
+    equity variance. Scenario losses inherit that noise; they are
+    indicative magnitudes, not predictions.
+18. **HY OAS dropped for collinearity.** Including IG and HY jointly
+    flipped the IG beta's sign. Dropping HY keeps the model interpretable
+    but means HY-specific stress cannot be expressed independently.
+19. **Marginal betas cannot be stacked.** A scenario that names an equity
+    shock has its macro legs suppressed (double-count guard). The
+    consequence: those scenarios are effectively equity-only, and the
+    credit/rates legs are context rather than additive P&L.
+20. **No revaluation, no convexity.** Everything is first-order linear.
+    A real rates book would need duration/convexity and full repricing;
+    this portfolio has neither instrument type.
+21. **Historical replays are survivorship-flattered.** Today's S&P 500
+    membership excludes what failed. The 2008 replay at −40.6% is milder
+    than a 2008-vintage portfolio would have suffered.
+22. **Reverse stress is only as honest as its bounds and scales.** The
+    "smallest shock" answer depends entirely on the `scales` that declare
+    which moves are equally painful — a modelling judgement, set in
+    config and visible on the dashboard rather than buried.
+
+## Coming with Week 4
 
 FinBERT domain shift on risk-factor language, and Granger ≠ causation for
 the NRS overlay.

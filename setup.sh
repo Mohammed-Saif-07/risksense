@@ -25,8 +25,11 @@ python data/ingest_macro.py
 echo "==> Running PySpark returns pipeline"
 python -m risksense.pipelines.returns_pipeline
 
-echo "==> Computing Historical VaR/ES + backtests"
+echo "==> Computing VaR/ES for all engines + backtest suite"
 python -m risksense.cli
+
+echo "==> Running stress tests (historical replay, scenarios, reverse)"
+python -m risksense.stress
 
 echo "==> Done. Launch the dashboard with:"
 echo "    source .venv/bin/activate && streamlit run dashboards/streamlit_app.py"

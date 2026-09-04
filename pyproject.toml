@@ -21,7 +21,7 @@ addopts = "-q --strict-markers"
 source = ["risksense"]
 omit = [
     # Weekly-milestone stubs are excluded until their code lands.
-    "risksense/stress/*",
+    "risksense/stress/__main__.py",
     "risksense/narrative/*",
     "risksense/validation/*",
 ]
